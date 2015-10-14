@@ -1,0 +1,56 @@
+{
+    "dependencies": ["WeatherUnderground"],
+    "singleton": true,
+    "category": "environment",
+    "author": "Maroš Kollár",
+    "homepage": "http://k-1.com",
+    "icon": "icon.png",
+    "version": "1.0.0",
+    "maturity": "stable",
+    "moduleName": "Rain",
+    "repository": {
+        "type": "git",
+        "source": "https://github.com/maros/Zway-Rain"
+    },
+    "defaults": {
+        "title": "__title__",
+        "description": "__description__"
+    },
+    "schema": {
+        "type": "object",
+        "properties": {
+            "popThreshold": {
+                "type": "integer"
+            },
+            "rainSensors": {
+                "type": "array",
+                "items": {
+                    "field": "enum",
+                    "datasource": "namespaces",
+                    "enum": "namespaces:devices_switchBinary:deviceId",
+                    "required": true
+                }
+            }
+        },
+        "required": true
+    },
+    "options": {
+        "fields": {
+            "popThreshold": {
+                "label": "__pop_threshold_label__",
+                "helper": "__pop_threshold_helper__"
+            },
+            "rainSensors": {
+                "label": "__rain_sensors_label__",
+                "fields": {
+                    "item": {
+                        "type": "select",
+                        "datasource": "namespaces",
+                        "field": "devices",
+                        "optionLabels": "namespaces:devices_switchBinary:deviceName"
+                    }
+                }
+            }
+        }
+    }
+}
