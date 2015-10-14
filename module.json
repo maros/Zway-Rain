@@ -27,9 +27,12 @@
                 "items": {
                     "field": "enum",
                     "datasource": "namespaces",
-                    "enum": "namespaces:devices_switchBinary:deviceId",
+                    "enum": "namespaces:devices_sensorBinary:deviceId",
                     "required": true
                 }
+            },
+            "timeout": {
+                "type": "integer"
             }
         },
         "required": true
@@ -47,9 +50,13 @@
                         "type": "select",
                         "datasource": "namespaces",
                         "field": "devices",
-                        "optionLabels": "namespaces:devices_switchBinary:deviceName"
+                        "optionLabels": "namespaces:devices_sensorBinary:deviceName"
                     }
                 }
+            },
+            "timeout": {
+                "label": "__timeout_label__",
+                "helper": "__timeout_helper__"
             }
         }
     }
