@@ -1,5 +1,5 @@
 {
-    "dependencies": ["WeatherUnderground"],
+    "dependencies": [],
     "singleton": true,
     "category": "environment",
     "author": "Maroš Kollár",
