@@ -183,7 +183,7 @@ Rain.prototype.checkRain = function() {
     }
 };
 
-Rain.prototype.reseRain = function() {
+Rain.prototype.resetRain = function() {
     var self        = this;
     self.timeout    = undefined;
     self.vDev.set('metrics:level','off');
