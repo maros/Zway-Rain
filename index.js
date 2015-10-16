@@ -160,6 +160,7 @@ Rain.prototype.checkRain = function() {
     } else if (rain
         && level === 'off') {
         self.vDev.set('metrics:level','on');
+        self.vDev.set('metrics:change',Math.floor(new Date().getTime() / 1000));
         self.vDev.set('metrics:icon','/ZAutomation/api/v1/load/modulemedia/Rain/icon.png');
         self.controller.emit("rain.start");
     // Stop rain
@@ -185,5 +186,6 @@ Rain.prototype.reseRain = function() {
     var self        = this;
     self.timeout    = undefined;
     self.vDev.set('metrics:level','off');
+    self.vDev.set('metrics:change',Math.floor(new Date().getTime() / 1000));
     self.vDev.set('metrics:icon','/ZAutomation/api/v1/load/modulemedia/Rain/icon_norain.png');
 };
