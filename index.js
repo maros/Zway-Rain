@@ -117,14 +117,14 @@ Rain.prototype.checkRain = function() {
     var rain        = false;
     var level       = self.vDev.get('metrics:level');
     var hasTicmeout  = (typeof(self.timeout) !== 'undefined');
-
+    
     _.each(self.config.devices,function(deviceId) {
         var device = self.controller.devices.get(deviceId);
         if (device.get('metrics:level') === 'on') {
             rain = true;
         }
     });
-
+    
     // Handle WeatherUndergound Module
     if (! rain && typeof(self.weatherUndergound) !== 'undefined') {
         if (self.weatherUndergound.get('metrics:conditiongroup') === 'poor') {
@@ -151,15 +151,19 @@ Rain.prototype.checkRain = function() {
         }
     }
     
+    console.log('[Rain] Checking rain. Currently '+rain);
+    
     // Reset timeout on new rain
     if (rain
         && hasTicmeout) {
+        console.log('[Rain] Detected rain start during timeout');
         clearTimeout(self.timeout);
         self.timeout = undefined;
         hasTicmeout = false;
     // New rain
     } else if (rain
         && level === 'off') {
+        console.log('[Rain] Detected rain start');
         self.vDev.set('metrics:level','on');
         self.vDev.set('metrics:change',Math.floor(new Date().getTime() / 1000));
         self.vDev.set('metrics:icon','/ZAutomation/api/v1/load/modulemedia/Rain/icon.png');
@@ -172,6 +176,7 @@ Rain.prototype.checkRain = function() {
         // Timeout
         if (typeof(self.config.timeout) !== 'undefined'
             && parseInt(self.config.timeout) > 0) {
+            console.log('[Rain] Detected rain end. Start timeout');
             self.timeout = setTimeout(
                 _.bind(self.resetRain,self),
                 (parseInt(self.config.timeout) * 1000 * 60)
@@ -186,6 +191,7 @@ Rain.prototype.checkRain = function() {
 Rain.prototype.resetRain = function() {
     var self        = this;
     self.timeout    = undefined;
+    console.log('[Rain] Untrigger rain sensor');
     self.vDev.set('metrics:level','off');
     self.vDev.set('metrics:change',Math.floor(new Date().getTime() / 1000));
     self.vDev.set('metrics:icon','/ZAutomation/api/v1/load/modulemedia/Rain/icon_norain.png');
