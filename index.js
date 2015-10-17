@@ -52,9 +52,6 @@ Rain.prototype.init = function (config) {
         moduleId: this.id
     });
     
-    // Initially turn off
-    this.vDev.set('metrics:level','off');
-    
     setTimeout(_.bind(self.initCallback,self),60000);
 };
 
@@ -78,7 +75,10 @@ Rain.prototype.initCallback = function() {
             vDev.on('change:metrics:zwaveOpenWeather',self.callback);
         }
     });
-
+    
+    // Initially turn off
+    this.vDev.set('metrics:level','off');
+    
     self.checkRain();
 };
 
