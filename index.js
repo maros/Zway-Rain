@@ -153,6 +153,11 @@ Rain.prototype.checkRain = function() {
     
     console.log('[Rain] Checking rain. Currently '+rain);
     
+    if (rain) {
+        self.vDev.set('metrics:icon','/ZAutomation/api/v1/load/modulemedia/Rain/icon.png');
+        self.vDev.set('metrics:level','on');
+    }
+    
     // Reset timeout on new rain
     if (rain
         && hasTicmeout) {
@@ -164,9 +169,7 @@ Rain.prototype.checkRain = function() {
     } else if (rain
         && level === 'off') {
         console.log('[Rain] Detected rain start');
-        self.vDev.set('metrics:level','on');
         self.vDev.set('metrics:change',Math.floor(new Date().getTime() / 1000));
-        self.vDev.set('metrics:icon','/ZAutomation/api/v1/load/modulemedia/Rain/icon.png');
         self.controller.emit("rain.start");
     // Stop rain
     } else if (! rain
@@ -177,6 +180,7 @@ Rain.prototype.checkRain = function() {
         if (typeof(self.config.timeout) !== 'undefined'
             && parseInt(self.config.timeout) > 0) {
             console.log('[Rain] Detected rain end. Start timeout');
+            self.vDev.set('metrics:icon','/ZAutomation/api/v1/load/modulemedia/Rain/icon_timeout.png');
             self.timeout = setTimeout(
                 _.bind(self.resetRain,self),
                 (parseInt(self.config.timeout) * 1000 * 60)
