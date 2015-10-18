@@ -32,7 +32,7 @@ Will be called whenever rain starts.
 
 # Virtual Devices
 
-This module creates a virtual binarsSensor device that indicates the current
+This module creates a virtual binarySensor device that indicates the current
 rain state.
 
 # License
