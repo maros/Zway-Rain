@@ -123,7 +123,8 @@ Rain.prototype.checkRain = function() {
     
     _.each(self.config.devices,function(deviceId) {
         var device = self.controller.devices.get(deviceId);
-        if (device.get('metrics:level') === 'on') {
+        if (device != null 
+            && device.get('metrics:level') === 'on') {
             rain = true;
         }
     });
