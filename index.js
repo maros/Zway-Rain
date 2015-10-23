@@ -77,7 +77,7 @@ Rain.prototype.initCallback = function() {
     });
     
     // Initially turn off
-    this.vDev.set('metrics:level','off');
+    self.resetRain();
     
     self.checkRain();
 };
@@ -200,7 +200,7 @@ Rain.prototype.resetRain = function() {
     var self        = this;
     self.timeout    = undefined;
     console.log('[Rain] Untrigger rain sensor');
-    self.vDev.set('metrics:level','off');
     self.vDev.set('metrics:change',Math.floor(new Date().getTime() / 1000));
+    self.vDev.set('metrics:level','off');
     self.vDev.set('metrics:icon','/ZAutomation/api/v1/load/modulemedia/Rain/icon_norain.png');
 };
