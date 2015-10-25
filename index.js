@@ -126,15 +126,18 @@ Rain.prototype.checkRain = function() {
         if (device != null 
             && device.get('metrics:level') === 'on') {
             rain = true;
+            console.log('[Rain] Detected rain from sensor');
         }
     });
     
     // Handle WeatherUndergound Module
     if (! rain && typeof(self.weatherUndergound) !== 'undefined') {
         if (self.weatherUndergound.get('metrics:conditiongroup') === 'poor') {
+            console.log('[Rain] Detected rain from WeatherUnderground condition');
             rain = true;
         } else if (typeof(self.config.popThreshold) !== 'undefined'
             && self.weatherUndergound.get('metrics:pop') >= self.config.popThreshold) {
+            console.log('[Rain] Detected rain from WeatherUnderground pop');
             rain = true;
         }
     }
@@ -151,15 +154,16 @@ Rain.prototype.checkRain = function() {
                 771,
                 901, 902, 906, 960, 961, 962
             ],data.weather[0].id)) {
+            console.log('[Rain] Detected rain from OpenWeather');
             rain = true;
         }
     }
     
-    console.log('[Rain] Checking rain. Currently '+rain);
-    
     if (rain) {
         self.vDev.set('metrics:icon','/ZAutomation/api/v1/load/modulemedia/Rain/icon.png');
         self.vDev.set('metrics:level','on');
+    } else {
+        console.log('[Rain] No rain detected');
     }
     
     // Reset timeout on new rain
