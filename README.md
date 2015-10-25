@@ -39,7 +39,7 @@ rain state.
 
 ```shell
 cd /opt/z-way-server/automation/modules
-git clone git@github.com:maros/Zway-Rain.git Rain --branch latest
+git clone https://github.com/maros/Zway-Rain.git Rain --branch latest
 ```
 
 To update or install a specific version
