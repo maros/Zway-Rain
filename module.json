@@ -14,7 +14,8 @@
       "fields" : {
          "popThreshold" : {
             "helper" : "__pop_threshold_helper__",
-            "label" : "__pop_threshold_label__"
+            "label" : "__pop_threshold_label__",
+            "order": 2
          },
          "rainSensors" : {
             "fields" : {
@@ -25,11 +26,13 @@
                   "type" : "select"
                }
             },
-            "label" : "__rain_sensors_label__"
+            "label" : "__rain_sensors_label__",
+            "order": 3
          },
          "timeout" : {
             "helper" : "__timeout_helper__",
-            "label" : "__timeout_label__"
+            "label" : "__timeout_label__",
+            "order": 1
          }
       }
    },
