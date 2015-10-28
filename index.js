@@ -208,4 +208,6 @@ Rain.prototype.resetRain = function() {
     self.vDev.set('metrics:change',Math.floor(new Date().getTime() / 1000));
     self.vDev.set('metrics:level','off');
     self.vDev.set('metrics:icon','/ZAutomation/api/v1/load/modulemedia/Rain/icon_norain.png');
+    
+    self.controller.emit("rain.stop");
 };
