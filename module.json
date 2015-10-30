@@ -52,6 +52,7 @@
                "field" : "enum",
                "required" : true
             },
+            "uniqueItems": true,
             "type" : "array"
          },
          "timeout" : {
