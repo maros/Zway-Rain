@@ -15,7 +15,7 @@
          "popThreshold" : {
             "helper" : "__pop_threshold_helper__",
             "label" : "__pop_threshold_label__",
-            "order": 2
+            "order" : 2
          },
          "rainSensors" : {
             "fields" : {
@@ -27,12 +27,12 @@
                }
             },
             "label" : "__rain_sensors_label__",
-            "order": 3
+            "order" : 3
          },
          "timeout" : {
             "helper" : "__timeout_helper__",
             "label" : "__timeout_label__",
-            "order": 1
+            "order" : 1
          }
       }
    },
@@ -52,8 +52,8 @@
                "field" : "enum",
                "required" : true
             },
-            "uniqueItems": true,
-            "type" : "array"
+            "type" : "array",
+            "uniqueItems" : true
          },
          "timeout" : {
             "type" : "integer"
@@ -63,5 +63,5 @@
       "type" : "object"
    },
    "singleton" : true,
-   "version" : "1.01"
+   "version" : "1.02"
 }

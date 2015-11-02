@@ -1,0 +1,14 @@
+1.02 2015 Nov 02, Mon
+    * Fix rain sensor checks
+    * Cleanup module definition
+    * rain.stop event
+    * Add probeTitle to virtual device
+
+1.01 2015 Oct 25, Sun
+    * Fix device init
+	* Check for missing devices
+	* Indicate rain timeout state
+	* Sensor is initially off
+
+1.00 2015 Oct 16, Fri
+    * Initial version
