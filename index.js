@@ -59,7 +59,7 @@ Rain.prototype.init = function (config) {
 Rain.prototype.initCallback = function() {
     var self = this;
     
-    _.each(self.config.devices,function(deviceId) {
+    _.each(self.config.rainSensors,function(deviceId) {
         self.controller.devices.on(deviceId,"change:metrics:level",self.callback);
     });
 
@@ -98,7 +98,7 @@ Rain.prototype.stop = function () {
         self.weatherOpen.off('change:metrics:change',self.callback);
     }
 
-    _.each(self.config.devices,function(deviceId) {
+    _.each(self.config.rainSensors,function(deviceId) {
         self.controller.devices.off(deviceId,"change:metrics:level",self.callback);
     });
     
@@ -122,7 +122,8 @@ Rain.prototype.checkRain = function() {
     var level       = self.vDev.get('metrics:level');
     var hasTicmeout  = (typeof(self.timeout) !== 'undefined');
     
-    _.each(self.config.devices,function(deviceId) {
+    
+    _.each(self.config.rainSensors,function(deviceId) {
         var device = self.controller.devices.get(deviceId);
         if (device != null 
             && device.get('metrics:level') === 'on') {
