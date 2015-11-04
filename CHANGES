@@ -6,9 +6,9 @@
 
 1.01 2015 Oct 25, Sun
     * Fix device init
-	* Check for missing devices
-	* Indicate rain timeout state
-	* Sensor is initially off
+    * Check for missing devices
+    * Indicate rain timeout state
+    * Sensor is initially off
 
 1.00 2015 Oct 16, Fri
     * Initial version
