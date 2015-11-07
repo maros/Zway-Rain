@@ -63,7 +63,12 @@ Rain.prototype.initCallback = function() {
     var self = this;
     
     _.each(self.config.rainSensors,function(deviceId) {
-        self.controller.devices.on(deviceId,"change:metrics:level",self.callback);
+        var deviceObject = self.controller.devices.get(deviceId);
+        if (typeof(deviceObject) === null) {
+            console.error('[Rain] Could not find rain sensor device');
+        } else {
+            deviceObject.on('change:metrics:level',self.callback);
+        }
     });
 
     self.controller.devices.each(function(vDev) {
@@ -103,11 +108,10 @@ Rain.prototype.stop = function () {
 
     _.each(self.config.rainSensors,function(deviceId) {
         var deviceObject = self.controller.devices.get(deviceId);
-        if (typeof(deviceObject) === 'undefined') {
-            console.error('[Rain] Could not find rain sensor device');
-        } else {
-            deviceObject.on('change:metrics:level',self.callback);
+        if (typeof(deviceObject) === null) {
+            return;
         }
+        deviceObject.off('change:metrics:level',self.callback);
     });
     
     if (typeof(self.timeout) !== 'undefined') {
@@ -131,9 +135,9 @@ Rain.prototype.checkRain = function() {
     var hasTicmeout  = (typeof(self.timeout) !== 'undefined');
     
     _.each(self.config.rainSensors,function(deviceId) {
-        var device = self.controller.devices.get(deviceId);
-        if (typeof(device) !== 'undefined'
-            && device.get('metrics:level') === 'on') {
+        var deviceObject = self.controller.devices.get(deviceId);
+        if (deviceObject !== null
+            && deviceObject.get('metrics:level') === 'on') {
             rain = true;
             console.log('[Rain] Detected rain from sensor');
         }
@@ -191,7 +195,7 @@ Rain.prototype.checkRain = function() {
         var openWindows = [];
         _.each(self.config.windows,function(deviceId) {
             var deviceObject = self.controller.devices.get(deviceId);
-            if (typeof(deviceObject) === 'undefined') {
+            if (deviceObject === null) {
                 console.error('[Rain] Could not find window sensor device');
             } else if (deviceObject.get('metrics:level') === 'on') {
                 var location    = deviceObject.get('location');
