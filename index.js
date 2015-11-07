@@ -188,6 +188,36 @@ Rain.prototype.checkRain = function() {
         console.log('[Rain] Detected rain start');
         self.vDev.set('metrics:change',Math.floor(new Date().getTime() / 1000));
         self.controller.emit("rain.start");
+        var openWindows = [];
+        _.each(self.config.windows,function(deviceId) {
+            var deviceObject = self.controller.devices.get(deviceId);
+            if (typeof(deviceObject) === 'undefined') {
+                console.error('[Rain] Could not find window sensor device');
+            } else if (deviceObject.get('metrics:level') === 'on') {
+                var location    = deviceObject.get('location');
+                var room        = _.find(
+                    self.controller.locations, 
+                    function(item){ return (item.id === location) }
+                );
+                
+                var message     = deviceObject.get('metrics:title');
+                if (typeof(room) === 'object') {
+                    message = message + ' (' + room.title + ')';
+                }
+                
+                console.log('[Rain] msg'+message);
+                openWindows.push(message);
+            }
+        });
+        
+        if (openWindows.length > 0) {
+            self.controller.addNotification(
+                "warning", 
+                self.langFile.rain_window + '\n' + openWindows.join('\n'),
+                "module", 
+                "Rain"
+            );
+        }
     // Stop rain
     } else if (! rain
         && level === 'on'
