@@ -7,8 +7,13 @@ currently rains or not. The sensor can query
 * the standard OpenWeather plugin
 * the WeatherUndergound plugin from https://github.com/maros/Zway-WeatherUnderground
 
-If one of the sources detects rain, then the rain seonsor will be triggered.
+If one of the sources detects rain, then the rain sensor will be triggered.
 Untriggering after rain stops may have an optional timeout period.
+
+Optionally multiple binary sensors (ie. window sensors) may be configured
+that should be checked if rain starts. A notification will be issued when
+an open window is detected. The check will only happen once when rain starts
+and not regularly during a rain period.
 
 Please note that the rain data from OpenWeather and the WeatherUndergound
 module are not sufficiently accurate to operate in scenarios requiring 
@@ -31,6 +36,10 @@ un-trip immediately if left empty
 Current conditions from WeatherUndergound contain the current probability
 of probability of precipitation. If this value is set, then pop values higher
 than the threshold will trigger the rain state.
+
+## windows
+
+Window sensors to check when rain starts.
 
 # Events
 
