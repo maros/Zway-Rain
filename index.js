@@ -13,6 +13,13 @@ Description:
 function Rain (id, controller) {
     // Call superconstructor first (AutomationModule)
     Rain.super_.call(this, id, controller);
+    
+    this.langFile           = undefined;
+    this.weatherUndergound  = undefined;
+    this.weatherOpen        = undefined;
+    this.timeout            = undefined;
+    this.popThreshold       = undefined;
+    this.callback           = undefined;
 }
 
 inherits(Rain, AutomationModule);
@@ -27,13 +34,9 @@ Rain.prototype.init = function (config) {
     Rain.super_.prototype.init.call(this, config);
 
     var self = this;
-    var langFile = self.controller.loadModuleLang("Rain");
-    
-    self.weatherUndergound = undefined;
-    self.weatherOpen = undefined;
-    self.timeout = undefined;
-    self.popThreshold = config.popThreshold;
-    self.callback = _.bind(self.checkRain,self);
+    self.langFile       = self.controller.loadModuleLang("Rain");
+    self.popThreshold   = config.popThreshold;
+    self.callback       = _.bind(self.checkRain,self);
 
     // Create vdev
     this.vDev = this.controller.devices.create({
@@ -41,7 +44,7 @@ Rain.prototype.init = function (config) {
         defaults: {
             metrics: {
                 probeTitle: 'rain',
-                title: langFile.title,
+                title: self.langFile.title,
                 level: 'off',
                 icon: '/ZAutomation/api/v1/load/modulemedia/Rain/icon_norain.png'
             }
