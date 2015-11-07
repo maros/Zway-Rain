@@ -102,7 +102,12 @@ Rain.prototype.stop = function () {
     }
 
     _.each(self.config.rainSensors,function(deviceId) {
-        self.controller.devices.off(deviceId,"change:metrics:level",self.callback);
+        var deviceObject = self.controller.devices.get(deviceId);
+        if (typeof(deviceObject) === 'undefined') {
+            console.error('[Rain] Could not find rain sensor device');
+        } else {
+            deviceObject.on('change:metrics:level',self.callback);
+        }
     });
     
     if (typeof(self.timeout) !== 'undefined') {
@@ -125,10 +130,9 @@ Rain.prototype.checkRain = function() {
     var level       = self.vDev.get('metrics:level');
     var hasTicmeout  = (typeof(self.timeout) !== 'undefined');
     
-    
     _.each(self.config.rainSensors,function(deviceId) {
         var device = self.controller.devices.get(deviceId);
-        if (device != null 
+        if (typeof(device) !== 'undefined'
             && device.get('metrics:level') === 'on') {
             rain = true;
             console.log('[Rain] Detected rain from sensor');
