@@ -33,6 +33,19 @@
             "helper" : "__timeout_helper__",
             "label" : "__timeout_label__",
             "order" : 1
+         },
+         "windows":{
+             "label":"__windows_label__",
+             "helper": "__windows_helper__",
+             "order" : 4,
+             "fields":{
+                 "item":{
+                     "datasource":"namespaces",
+                     "field" : "optionLabels",
+                     "optionLabels":"namespaces:devices_sensorBinary:deviceName",
+                     "type":"select"
+                 }
+             }
          }
       }
    },
@@ -57,6 +70,16 @@
          },
          "timeout" : {
             "type" : "integer"
+         },
+         "windows":{
+             "type":"array",
+             "items":{
+                 "datasource":"namespaces",
+                 "enum":"namespaces:devices_sensorBinary:deviceId",
+                 "field":"enum",
+                 "required":true
+             },
+             "uniqueItems":true
          }
       },
       "required" : true,

@@ -1,9 +1,12 @@
 {
-    "title" : "Virtual rain sensor",
-    "description" : "This module checks weather condition (via the OpenWeather or WeatherUnderground modules) and optional binary sensors to detect rain.",
-    "pop_threshold_helper" : "Sets the threshold for rain probability forecasts. Rain sensor will be triggered if threshold is exceeded.",
-    "pop_threshold_label" : "Probability of rain threshold",
-    "rain_sensors_label" : "Rain sensor devices",
-    "timeout_helper" : "Timeout in minutes to keep rain state after last rain was detected.",
-    "timeout_label" : "Rain Timeout"
+   "description" : "This module checks weather condition (via the OpenWeather or WeatherUnderground modules) and optional binary sensors to detect rain.",
+   "pop_threshold_helper" : "Sets the threshold for rain probability forecasts. Rain sensor will be triggered if threshold is exceeded.",
+   "pop_threshold_label" : "Probability of rain threshold",
+   "rain_sensors_label" : "Rain sensor devices",
+   "rain_window" : "Rain detected while windows are open!",
+   "timeout_helper" : "Timeout in minutes to keep rain state after last rain was detected.",
+   "timeout_label" : "Rain Timeout",
+   "title" : "Virtual rain sensor",
+   "windows_helper" : "A list of window sensors that should be checked if rain starts. Will send a notification if open windows are detected.",
+   "windows_label" : "Windows"
 }
