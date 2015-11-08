@@ -74,7 +74,7 @@ Rain.prototype.initCallback = function() {
     self.controller.devices.each(function(vDev) {
         var deviceType = vDev.get('deviceType');
         if (deviceType === 'sensorMultilevel'
-            && vDev.get('metrics:probeTitle') === 'weather_current') {
+            && vDev.get('metrics:probeTitle') === 'WeatherUndergoundCurrent') {
             self.weatherUndergound = vDev;
             vDev.on('change:metrics:change',self.callback);
         }
