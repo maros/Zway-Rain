@@ -43,7 +43,7 @@ Rain.prototype.init = function (config) {
         deviceId: "Rain_" + this.id,
         defaults: {
             metrics: {
-                probeTitle: 'rain',
+                probeTitle: 'Rain',
                 title: self.langFile.title,
                 level: 'off',
                 icon: '/ZAutomation/api/v1/load/modulemedia/Rain/icon_norain.png'
@@ -51,7 +51,7 @@ Rain.prototype.init = function (config) {
         },
         overlay: {
             deviceType: 'sensorBinary',
-            probeTitle: 'rain'
+            probeTitle: 'Rain'
         },
         moduleId: this.id
     });
