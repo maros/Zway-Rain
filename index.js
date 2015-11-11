@@ -16,6 +16,7 @@ function Rain (id, controller) {
     
     this.langFile           = undefined;
     this.weatherUndergound  = undefined;
+    this.forecastIO         = undefined;
     this.weatherOpen        = undefined;
     this.timeout            = undefined;
     this.popThreshold       = undefined;
@@ -77,8 +78,11 @@ Rain.prototype.initCallback = function() {
             && vDev.get('metrics:probeTitle') === 'WeatherUndergoundCurrent') {
             self.weatherUndergound = vDev;
             vDev.on('change:metrics:change',self.callback);
-        }
-        if (deviceType === 'sensorMultiline'
+        } else if (deviceType === 'sensorMultilevel'
+            && vDev.get('metrics:probeTitle') === 'ForecastIOCurrent') {
+            self.forecastIO = vDev;
+            vDev.on('change:metrics:change',self.callback);
+        } else if (deviceType === 'sensorMultiline'
             && vDev.get('metrics:multilineType') === 'openWeather') {
             self.weatherOpen = vDev;
             vDev.on('change:metrics:zwaveOpenWeather',self.callback);
@@ -104,6 +108,9 @@ Rain.prototype.stop = function () {
     }
     if (typeof(self.weatherOpen) !== 'undefined') {
         self.weatherOpen.off('change:metrics:change',self.callback);
+    }
+    if (typeof(self.forecastIO) !== 'undefined') {
+        self.forecastIO.off('change:metrics:change',self.callback);
     }
 
     _.each(self.config.rainSensors,function(deviceId) {
@@ -151,6 +158,18 @@ Rain.prototype.checkRain = function() {
         } else if (typeof(self.config.popThreshold) !== 'undefined'
             && self.weatherUndergound.get('metrics:pop') >= self.config.popThreshold) {
             console.log('[Rain] Detected rain from WeatherUnderground pop');
+            rain = true;
+        }
+    }
+    
+    // Handle ForecastIO Module
+    if (! rain && typeof(self.forecastIO) !== 'undefined') {
+        if (self.forecastIO.get('metrics:percipIntensity') > 0) {
+            console.log('[Rain] Detected rain from ForecastIO condition');
+            rain = true;
+        } else if (typeof(self.config.popThreshold) !== 'undefined'
+            && self.forecastIO.get('metrics:pop') >= self.config.popThreshold) {
+            console.log('[Rain] Detected rain from ForecastIO pop');
             rain = true;
         }
     }
