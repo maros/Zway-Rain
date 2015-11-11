@@ -194,7 +194,9 @@ Rain.prototype.checkRain = function() {
     if (rain) {
         self.vDev.set('metrics:icon','/ZAutomation/api/v1/load/modulemedia/Rain/icon.png');
         self.vDev.set('metrics:level','on');
+        self.vDev.set('metrics:rain','on');
     } else {
+        self.vDev.set('metrics:rain','off');
         console.log('[Rain] No rain detected');
     }
     
