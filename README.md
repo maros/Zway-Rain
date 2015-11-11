@@ -1,11 +1,12 @@
 # Zway-Rain
 
-This plugin creates a virtual binary rain sensor, that indicates whether it 
+This module creates a virtual binary rain sensor, that indicates whether it 
 currently rains or not. The sensor can query 
 
 * multiple binary sensors (eg. a FIB_FGBS-001 with an attached rain sensor)
-* the standard OpenWeather plugin
-* the WeatherUndergound plugin from https://github.com/maros/Zway-WeatherUnderground
+* the standard OpenWeather module
+* the WeatherUndergound module from https://github.com/maros/Zway-WeatherUnderground
+* the ForecastIO module from https://github.com/maros/Zway-ForecastIO
 
 If one of the sources detects rain, then the rain sensor will be triggered.
 Untriggering after rain stops may have an optional timeout period.
@@ -13,12 +14,12 @@ Untriggering after rain stops may have an optional timeout period.
 Optionally multiple binary sensors (ie. window sensors) may be configured
 that should be checked if rain starts. A notification will be issued when
 an open window is detected. The check will only happen once when rain starts
-and not regularly during a rain period.
+and will not be repeated during a rain period.
 
-Please note that the rain data from OpenWeather and the WeatherUndergound
-module are not sufficiently accurate to operate in scenarios requiring 
-accurate results, like management of window drives or awning blinds. Consider
-installing a physical sensor in these cases.
+Please note that the rain data from OpenWeather, WeatherUndergound and
+ForecastIO modules is not sufficiently accurate to operate in scenarios 
+requiring accurate results, like management of window drives or awning blinds. 
+Consider installing a physical sensor in these cases.
 
 # Configuration
 
@@ -33,9 +34,9 @@ un-trip immediately if left empty
 
 ## popThreshold
 
-Current conditions from WeatherUndergound contain the current probability
-of probability of precipitation. If this value is set, then pop values higher
-than the threshold will trigger the rain state.
+Current conditions from WeatherUndergound and ForecastIO contain the current 
+probability of probability of precipitation. If this value is set, then pop 
+values higher than the threshold will trigger the rain state.
 
 ## windows
 
