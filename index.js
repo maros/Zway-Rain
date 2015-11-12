@@ -152,7 +152,9 @@ Rain.prototype.checkRain = function() {
     
     // Handle WeatherUndergound Module
     if (! rain && typeof(self.weatherUndergound) !== 'undefined') {
-        if (self.weatherUndergound.get('metrics:conditiongroup') === 'poor') {
+        var condition = self.weatherUndergound.get('metrics:conditiongroup');
+        if (condition === 'poor'
+            || condition === 'snow') {
             console.log('[Rain] Detected rain from WeatherUnderground condition');
             rain = true;
         } else if (typeof(self.config.popThreshold) !== 'undefined'
@@ -164,7 +166,10 @@ Rain.prototype.checkRain = function() {
     
     // Handle ForecastIO Module
     if (! rain && typeof(self.forecastIO) !== 'undefined') {
-        if (self.forecastIO.get('metrics:percipIntensity') > 0) {
+        var condition = self.forecastIO.get('metrics:conditiongroup');
+        if (self.forecastIO.get('metrics:percipIntensity') > 0
+            || condition === 'poor'
+            || condition === 'snow') {
             console.log('[Rain] Detected rain from ForecastIO condition');
             rain = true;
         } else if (typeof(self.config.popThreshold) !== 'undefined'
