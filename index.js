@@ -54,6 +54,12 @@ Rain.prototype.init = function (config) {
             deviceType: 'sensorBinary',
             probeTitle: 'Rain'
         },
+        handler: function (command,args){
+            if (command === 'update'
+                && typeof(args) !== 'undefined') {
+                self.checkRain();
+            }
+        },
         moduleId: this.id
     });
     
@@ -167,6 +173,7 @@ Rain.prototype.checkRain = function() {
     // Handle ForecastIO Module
     if (! rain && typeof(self.forecastIO) !== 'undefined') {
         var condition = self.forecastIO.get('metrics:conditiongroup');
+        console.log('[Rain] Check FORECASTUO'+condition);
         if (self.forecastIO.get('metrics:percipintensity') > 0
             || condition === 'poor'
             || condition === 'snow') {
