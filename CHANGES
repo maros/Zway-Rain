@@ -1,3 +1,11 @@
+1.03 2015 Nov 15, Sun
+    * Update from UI
+    * Handle snow as rain
+    * Add metrics:rain
+    * Add support for forecastIO
+    * Add notification if rain starts
+    * Add windows that should be reported if opened during rain start
+
 1.02 2015 Nov 02, Mon
     * Fix rain sensor checks
     * Cleanup module definition

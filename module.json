@@ -34,18 +34,18 @@
             "label" : "__timeout_label__",
             "order" : 1
          },
-         "windows":{
-             "label":"__windows_label__",
-             "helper": "__windows_helper__",
-             "order" : 4,
-             "fields":{
-                 "item":{
-                     "datasource":"namespaces",
-                     "field" : "optionLabels",
-                     "optionLabels":"namespaces:devices_sensorBinary:deviceName",
-                     "type":"select"
-                 }
-             }
+         "windows" : {
+            "fields" : {
+               "item" : {
+                  "datasource" : "namespaces",
+                  "field" : "optionLabels",
+                  "optionLabels" : "namespaces:devices_sensorBinary:deviceName",
+                  "type" : "select"
+               }
+            },
+            "helper" : "__windows_helper__",
+            "label" : "__windows_label__",
+            "order" : 4
          }
       }
    },
@@ -71,20 +71,20 @@
          "timeout" : {
             "type" : "integer"
          },
-         "windows":{
-             "type":"array",
-             "items":{
-                 "datasource":"namespaces",
-                 "enum":"namespaces:devices_sensorBinary:deviceId",
-                 "field":"enum",
-                 "required":true
-             },
-             "uniqueItems":true
+         "windows" : {
+            "items" : {
+               "datasource" : "namespaces",
+               "enum" : "namespaces:devices_sensorBinary:deviceId",
+               "field" : "enum",
+               "required" : true
+            },
+            "type" : "array",
+            "uniqueItems" : true
          }
       },
       "required" : true,
       "type" : "object"
    },
    "singleton" : true,
-   "version" : "1.02"
+   "version" : "1.03"
 }
