@@ -167,7 +167,7 @@ Rain.prototype.checkRain = function() {
     // Handle ForecastIO Module
     if (! rain && typeof(self.forecastIO) !== 'undefined') {
         var condition = self.forecastIO.get('metrics:conditiongroup');
-        if (self.forecastIO.get('metrics:percipIntensity') > 0
+        if (self.forecastIO.get('metrics:percipintensity') > 0
             || condition === 'poor'
             || condition === 'snow') {
             console.log('[Rain] Detected rain from ForecastIO condition');
