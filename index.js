@@ -47,6 +47,7 @@ Rain.prototype.init = function (config) {
                 probeTitle: 'Rain',
                 title: self.langFile.title,
                 level: 'off',
+                rain: 'off',
                 icon: '/ZAutomation/api/v1/load/modulemedia/Rain/icon_norain.png'
             }
         },

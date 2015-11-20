@@ -51,7 +51,11 @@ Will be called whenever rain starts.
 # Virtual Devices
 
 This module creates a virtual binarySensor device that indicates the current
-rain state.
+rain state. Additionally the device stores the current rain status
+regardless of timeouts in metrics:rain. ie. if rain is detected both 
+metrics:level and metrics:rain are on. Once rain stops and the rain timeout
+begings metrics:rain will be switched off. metrics:rain will remain on until
+the timeout ends.
 
 # Installation
 
