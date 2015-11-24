@@ -252,7 +252,7 @@ Rain.prototype.checkRain = function() {
             var message =  self.langFile.rain_window + '\n' + openWindows.join('\n');
             self.controller.addNotification(
                 "warning", 
-                message
+                message,
                 "module", 
                 "Rain"
             );
