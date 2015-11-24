@@ -249,12 +249,22 @@ Rain.prototype.checkRain = function() {
         });
         
         if (openWindows.length > 0) {
+            var message =  self.langFile.rain_window + '\n' + openWindows.join('\n');
             self.controller.addNotification(
                 "warning", 
-                self.langFile.rain_window + '\n' + openWindows.join('\n'),
+                message
                 "module", 
                 "Rain"
             );
+            
+            self.controller.emit("security.rain.alarm",{
+                id:         self.id,
+                title:      self.vDev.get('metrics:title'),
+                location:   self.vDev.get('metrics:location'),
+                type:       "rain",
+                event:      "alarm",
+                message:    message
+            });
         }
     // Stop rain
     } else if (! rain
