@@ -84,11 +84,11 @@ Rain.prototype.initCallback = function() {
         if (deviceType === 'sensorMultilevel'
             && vDev.get('metrics:probeTitle') === 'WeatherUndergoundCurrent') {
             self.weatherUndergound = vDev;
-            vDev.on('change:metrics:change',self.callback);
+            vDev.on('change:metrics:updateTime',self.callback);
         } else if (deviceType === 'sensorMultilevel'
             && vDev.get('metrics:probeTitle') === 'ForecastIOCurrent') {
             self.forecastIO = vDev;
-            vDev.on('change:metrics:change',self.callback);
+            vDev.on('change:metrics:updateTime',self.callback);
         } else if (deviceType === 'sensorMultiline'
             && vDev.get('metrics:multilineType') === 'openWeather') {
             self.weatherOpen = vDev;
