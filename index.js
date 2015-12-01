@@ -300,11 +300,14 @@ Rain.prototype.checkRain = function() {
 Rain.prototype.resetRain = function() {
     var self        = this;
     self.timeout    = undefined;
+    var level       = self.vDev.get('metrics:level');
     console.log('[Rain] Untrigger rain sensor');
     self.vDev.set('metrics:change',Math.floor(new Date().getTime() / 1000));
     self.vDev.set('metrics:level','off');
     self.vDev.set('metrics:icon','/ZAutomation/api/v1/load/modulemedia/Rain/icon_norain.png');
     self.vDev.set('metrics:sources',[]);
     
-    self.controller.emit("rain.stop");
+    if (level === 'on') {        
+        self.controller.emit("rain.stop");
+    }
 };
