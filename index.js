@@ -48,6 +48,7 @@ Rain.prototype.init = function (config) {
                 title: self.langFile.title,
                 level: 'off',
                 rain: 'off',
+                sources: [],
                 icon: '/ZAutomation/api/v1/load/modulemedia/Rain/icon_norain.png'
             }
         },
@@ -147,49 +148,56 @@ Rain.prototype.checkRain = function() {
     var rain        = false;
     var level       = self.vDev.get('metrics:level');
     var hasTimeout = (typeof(self.timeout) !== 'undefined');
+    var sources     = [];
+    var condition;
     
     _.each(self.config.rainSensors,function(deviceId) {
         var deviceObject = self.controller.devices.get(deviceId);
         if (deviceObject !== null
             && deviceObject.get('metrics:level') === 'on') {
             rain = true;
+            sources.push(deviceId);
             console.log('[Rain] Detected rain from sensor');
         }
     });
     
     // Handle WeatherUndergound Module
-    if (! rain && typeof(self.weatherUndergound) !== 'undefined') {
-        var condition = self.weatherUndergound.get('metrics:conditiongroup');
+    if (typeof(self.weatherUndergound) !== 'undefined') {
+        
+        condition = self.weatherUndergound.get('metrics:conditiongroup');
         if (condition === 'poor'
             || condition === 'snow') {
             console.log('[Rain] Detected rain from WeatherUnderground condition');
+            sources.push(self.weatherUndergound.id);
             rain = true;
         } else if (typeof(self.config.popThreshold) !== 'undefined'
             && self.weatherUndergound.get('metrics:pop') >= self.config.popThreshold) {
             console.log('[Rain] Detected rain from WeatherUnderground pop');
             rain = true;
+            sources.push(self.weatherUndergound.id);
         }
     }
     
     // Handle ForecastIO Module
-    if (! rain && typeof(self.forecastIO) !== 'undefined') {
-        var condition = self.forecastIO.get('metrics:conditiongroup');
-        console.log('[Rain] Check FORECASTUO'+condition);
+    if (typeof(self.forecastIO) !== 'undefined') {
+        condition = self.forecastIO.get('metrics:conditiongroup');
         if (self.forecastIO.get('metrics:percipintensity') > 0
             || condition === 'poor'
             || condition === 'snow') {
             console.log('[Rain] Detected rain from ForecastIO condition');
             rain = true;
+            sources.push(self.forecastIO.id);
         } else if (typeof(self.config.popThreshold) !== 'undefined'
             && self.forecastIO.get('metrics:pop') >= self.config.popThreshold) {
             console.log('[Rain] Detected rain from ForecastIO pop');
             rain = true;
+            sources.push(self.forecastIO.id);
         }
     }
     
     // Handle OpenWeather Module
-    if (! rain && typeof(self.weatherOpen) !== 'undefined') {
-        var data = self.weatherOpen.get('metrics:zwaveOpenWeather');
+    if (typeof(self.weatherOpen) !== 'undefined') {
+        condition = self.weatherOpen.get('metrics:zwaveOpenWeather');
         // see http://openweathermap.org/weather-conditions
         if (_.contains([
                 200, 201, 202, 210, 211, 212, 221, 230, 231, 232,
@@ -198,9 +206,10 @@ Rain.prototype.checkRain = function() {
                 600, 601, 602, 611, 612, 615, 616, 620, 621, 622,
                 771,
                 901, 902, 906, 960, 961, 962
-            ],data.weather[0].id)) {
+            ],condition.weather[0].id)) {
             console.log('[Rain] Detected rain from OpenWeather');
             rain = true;
+            sources.push(self.weatherOpen.id);
         }
     }
     
@@ -212,6 +221,7 @@ Rain.prototype.checkRain = function() {
         self.vDev.set('metrics:rain','off');
         console.log('[Rain] No rain detected');
     }
+    self.vDev.set('metrics:sources',sources);
     
     // Reset timeout on new rain
     if (rain
@@ -294,6 +304,7 @@ Rain.prototype.resetRain = function() {
     self.vDev.set('metrics:change',Math.floor(new Date().getTime() / 1000));
     self.vDev.set('metrics:level','off');
     self.vDev.set('metrics:icon','/ZAutomation/api/v1/load/modulemedia/Rain/icon_norain.png');
+    self.vDev.set('metrics:sources',[]);
     
     self.controller.emit("rain.stop");
 };
