@@ -245,7 +245,7 @@ Rain.prototype.checkRain = function() {
                 var location    = deviceObject.get('location');
                 var room        = _.find(
                     self.controller.locations, 
-                    function(item){ return (item.id === location) }
+                    function(item){ return (item.id === location); }
                 );
                 
                 var message     = deviceObject.get('metrics:title');
@@ -283,12 +283,12 @@ Rain.prototype.checkRain = function() {
         
         // Timeout
         if (typeof(self.config.timeout) !== 'undefined'
-            && parseInt(self.config.timeout) > 0) {
+            && parseInt(self.config.timeout,10) > 0) {
             console.log('[Rain] Detected rain end. Start timeout');
             self.vDev.set('metrics:icon','/ZAutomation/api/v1/load/modulemedia/Rain/icon_timeout.png');
             self.timeout = setTimeout(
                 _.bind(self.resetRain,self),
-                (parseInt(self.config.timeout) * 1000 * 60)
+                (parseInt(self.config.timeout,10) * 1000 * 60)
             );
         // Imediate off
         } else {
