@@ -146,7 +146,7 @@ Rain.prototype.checkRain = function() {
     var self        = this;
     var rain        = false;
     var level       = self.vDev.get('metrics:level');
-    var hasTicmeout  = (typeof(self.timeout) !== 'undefined');
+    var hasTimeout = (typeof(self.timeout) !== 'undefined');
     
     _.each(self.config.rainSensors,function(deviceId) {
         var deviceObject = self.controller.devices.get(deviceId);
@@ -215,11 +215,11 @@ Rain.prototype.checkRain = function() {
     
     // Reset timeout on new rain
     if (rain
-        && hasTicmeout) {
+        && hasTimeout) {
         console.log('[Rain] Detected rain start during timeout');
         clearTimeout(self.timeout);
         self.timeout = undefined;
-        hasTicmeout = false;
+        hasTimeout = false;
     // New rain
     } else if (rain
         && level === 'off') {
@@ -269,7 +269,7 @@ Rain.prototype.checkRain = function() {
     // Stop rain
     } else if (! rain
         && level === 'on'
-        && ! hasTicmeout) {
+        && ! hasTimeout) {
         
         // Timeout
         if (typeof(self.config.timeout) !== 'undefined'
