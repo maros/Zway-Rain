@@ -48,6 +48,17 @@ Window sensors to check when rain starts.
 
 Will be called whenever rain starts.
 
+# Events
+
+## rain.start, rain.stop
+
+Emits an event when rain start or stop is detected
+
+## security.rain.alarm
+
+Emits a security event (same structure as the SecurityZone module events)
+when rain starts while an open window was detectet
+
 # Virtual Devices
 
 This module creates a virtual binarySensor device that indicates the current
