@@ -1,6 +1,8 @@
 {
    "description" : "dieses Modul prüft die Wetterbedingungen (mit OpenWeather, ForecastIO oder WeatherUnderground Modulen) und optional binären Sensoren um Regen zu melden.",
-   "pop_threshold_helper" : "setzt den Schwellenwert für die Vorhersage der Regenwarscheinlichkeit. Regensensor löst aus, wenn der Grenzwert überschritten wird.",
+   "intensity_threshold_helper" : "Setzt den Schwellenwert für die Regenintensität (in mm oder Inches / 1h). Regensensor löst aus, wenn der Grenzwert überschritten wird.",
+   "intensity_threshold_label" : "Regenitensität Schwellenwert",
+   "pop_threshold_helper" : "Setzt den Schwellenwert für die Vorhersage der Regenwarscheinlichkeit. Regensensor löst aus, wenn der Grenzwert überschritten wird.",
    "pop_threshold_label" : "Regenwahrscheinlichkeit Schwellenwert",
    "rain_sensors_label" : "Regensensoren",
    "rain_window" : "Regen gemeldet während die Fenster offen sind!",

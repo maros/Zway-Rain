@@ -166,7 +166,8 @@ Rain.prototype.checkRain = function() {
         
         condition = self.weatherUndergound.get('metrics:conditiongroup');
         if (condition === 'poor'
-            || condition === 'snow') {
+            || condition === 'snow'
+            || self.forecastIO.get('metrics:percipintensity') > self.config.intensityThreshold) {
             console.log('[Rain] Detected rain from WeatherUnderground condition');
             sources.push(self.weatherUndergound.id);
             rain = true;
@@ -181,7 +182,7 @@ Rain.prototype.checkRain = function() {
     // Handle ForecastIO Module
     if (typeof(self.forecastIO) !== 'undefined') {
         condition = self.forecastIO.get('metrics:conditiongroup');
-        if (self.forecastIO.get('metrics:percipintensity') > 0
+        if (self.forecastIO.get('metrics:percipintensity') > self.config.intensityThreshold
             || condition === 'poor'
             || condition === 'snow') {
             console.log('[Rain] Detected rain from ForecastIO condition');
