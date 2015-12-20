@@ -64,6 +64,9 @@
          "popThreshold" : {
             "type" : "integer"
          },
+         "intensityThreshold" : {
+             "type" : "number"
+          },
          "rainSensors" : {
             "items" : {
                "datasource" : "namespaces",

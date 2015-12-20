@@ -147,7 +147,9 @@ Rain.prototype.checkRain = function() {
     var self        = this;
     var rain        = false;
     var level       = self.vDev.get('metrics:level');
-    var hasTimeout = (typeof(self.timeout) !== 'undefined');
+    var hasTimeout  = (typeof(self.timeout) !== 'undefined');
+    var intensity   = parseFloat(self.config.intensityThreshold)  || 0;
+    var pop         = parseFloat(self.config.popThreshold) || 0;
     var sources     = [];
     var condition;
     
@@ -167,12 +169,12 @@ Rain.prototype.checkRain = function() {
         condition = self.weatherUndergound.get('metrics:conditiongroup');
         if (condition === 'poor'
             || condition === 'snow'
-            || self.forecastIO.get('metrics:percipintensity') > self.config.intensityThreshold) {
+            || self.forecastIO.get('metrics:percipintensity') > intensity) {
             console.log('[Rain] Detected rain from WeatherUnderground condition');
             sources.push(self.weatherUndergound.id);
             rain = true;
         } else if (typeof(self.config.popThreshold) !== 'undefined'
-            && self.weatherUndergound.get('metrics:pop') >= self.config.popThreshold) {
+            && self.weatherUndergound.get('metrics:pop') >= pop) {
             console.log('[Rain] Detected rain from WeatherUnderground pop');
             rain = true;
             sources.push(self.weatherUndergound.id);
@@ -182,14 +184,14 @@ Rain.prototype.checkRain = function() {
     // Handle ForecastIO Module
     if (typeof(self.forecastIO) !== 'undefined') {
         condition = self.forecastIO.get('metrics:conditiongroup');
-        if (self.forecastIO.get('metrics:percipintensity') > self.config.intensityThreshold
+        if (self.forecastIO.get('metrics:percipintensity') > intensity
             || condition === 'poor'
             || condition === 'snow') {
             console.log('[Rain] Detected rain from ForecastIO condition');
             rain = true;
             sources.push(self.forecastIO.id);
         } else if (typeof(self.config.popThreshold) !== 'undefined'
-            && self.forecastIO.get('metrics:pop') >= self.config.popThreshold) {
+            && self.forecastIO.get('metrics:pop') >= pop) {
             console.log('[Rain] Detected rain from ForecastIO pop');
             rain = true;
             sources.push(self.forecastIO.id);
