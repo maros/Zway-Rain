@@ -1,3 +1,13 @@
+1.04 2015 Dec 20, Sun
+    * Add checks for rain intensity
+    * Documentation
+    * Call rain.stop only if rain actually stops
+    * Store rain sources
+    * German translation
+    * Emit events
+    * Clarify metrics:rain
+	* Various minor fixups
+
 1.03 2015 Nov 15, Sun
     * Update from UI
     * Handle snow as rain

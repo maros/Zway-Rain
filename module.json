@@ -3,8 +3,8 @@
    "category" : "environment",
    "defaults" : {
       "description" : "__description__",
-      "title" : "__title__",
-      "intensityThreshold": 0
+      "intensityThreshold" : 0,
+      "title" : "__title__"
    },
    "dependencies" : [],
    "homepage" : "http://k-1.com",
@@ -13,16 +13,16 @@
    "moduleName" : "Rain",
    "options" : {
       "fields" : {
+         "intensityThreshold" : {
+            "helper" : "__intensity_threshold_helper__",
+            "label" : "__intensity_threshold_label__",
+            "order" : 3
+         },
          "popThreshold" : {
             "helper" : "__pop_threshold_helper__",
             "label" : "__pop_threshold_label__",
             "order" : 2
          },
-         "intensityThreshold" : {
-             "helper" : "__intensity_threshold_helper__",
-             "label" : "__intensity_threshold_label__",
-             "order" : 3
-          },
          "rainSensors" : {
             "fields" : {
                "item" : {
@@ -61,12 +61,12 @@
    },
    "schema" : {
       "properties" : {
+         "intensityThreshold" : {
+            "type" : "number"
+         },
          "popThreshold" : {
             "type" : "integer"
          },
-         "intensityThreshold" : {
-             "type" : "number"
-          },
          "rainSensors" : {
             "items" : {
                "datasource" : "namespaces",
@@ -95,5 +95,5 @@
       "type" : "object"
    },
    "singleton" : true,
-   "version" : "1.03"
+   "version" : 1.04
 }
