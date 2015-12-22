@@ -21,6 +21,7 @@ function Rain (id, controller) {
     this.timeout            = undefined;
     this.popThreshold       = undefined;
     this.callback           = undefined;
+    this.interval           = undefined;
 }
 
 inherits(Rain, AutomationModule);
@@ -65,7 +66,8 @@ Rain.prototype.init = function (config) {
         moduleId: this.id
     });
     
-    setTimeout(_.bind(self.initCallback,self),60000);
+    setTimeout(_.bind(self.initCallback,self),60*1000);
+    self.interval = setInterval(_.bind(self.checkRain,self),30*60*1000);
 };
 
 Rain.prototype.initCallback = function() {
@@ -85,14 +87,17 @@ Rain.prototype.initCallback = function() {
         if (deviceType === 'sensorMultilevel'
             && vDev.get('metrics:probeTitle') === 'WeatherUndergoundCurrent') {
             self.weatherUndergound = vDev;
+            console.log('[Rain] Bind to '+vDev.id);
             vDev.on('change:metrics:updateTime',self.callback);
         } else if (deviceType === 'sensorMultilevel'
             && vDev.get('metrics:probeTitle') === 'ForecastIOCurrent') {
             self.forecastIO = vDev;
+            console.log('[Rain] Bind to '+vDev.id);
             vDev.on('change:metrics:updateTime',self.callback);
         } else if (deviceType === 'sensorMultiline'
             && vDev.get('metrics:multilineType') === 'openWeather') {
             self.weatherOpen = vDev;
+            console.log('[Rain] Bind to '+vDev.id);
             vDev.on('change:metrics:zwaveOpenWeather',self.callback);
         }
     });
@@ -134,6 +139,9 @@ Rain.prototype.stop = function () {
         self.timeout = undefined;
     }
     
+    clearInterval(self.interval);
+    self.interval = undefined;
+    
     self.callback = undefined;
     
     Rain.super_.prototype.stop.call(this);
@@ -153,6 +161,8 @@ Rain.prototype.checkRain = function() {
     var sources     = [];
     var condition;
     
+    console.log('[Rain] Check rain');
+    
     _.each(self.config.rainSensors,function(deviceId) {
         var deviceObject = self.controller.devices.get(deviceId);
         if (deviceObject !== null
@@ -171,13 +181,13 @@ Rain.prototype.checkRain = function() {
             || condition === 'snow'
             || self.forecastIO.get('metrics:percipintensity') > intensity) {
             console.log('[Rain] Detected rain from WeatherUnderground condition');
-            sources.push(self.weatherUndergound.id);
+            sources.push(self.weatherUndergound.id+'/metrics:conditiongroup');
             rain = true;
         } else if (typeof(self.config.popThreshold) !== 'undefined'
             && self.weatherUndergound.get('metrics:pop') >= pop) {
             console.log('[Rain] Detected rain from WeatherUnderground pop');
             rain = true;
-            sources.push(self.weatherUndergound.id);
+            sources.push(self.weatherUndergound.id+'/metrics:pop');
         }
     }
     
@@ -189,12 +199,12 @@ Rain.prototype.checkRain = function() {
             || condition === 'snow') {
             console.log('[Rain] Detected rain from ForecastIO condition');
             rain = true;
-            sources.push(self.forecastIO.id);
+            sources.push(self.forecastIO.id+'/metrics:conditiongroup');
         } else if (typeof(self.config.popThreshold) !== 'undefined'
             && self.forecastIO.get('metrics:pop') >= pop) {
             console.log('[Rain] Detected rain from ForecastIO pop');
             rain = true;
-            sources.push(self.forecastIO.id);
+            sources.push(self.forecastIO.id+'/metrics:pop');
         }
     }
     
