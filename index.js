@@ -14,7 +14,6 @@ function Rain (id, controller) {
     // Call superconstructor first (AutomationModule)
     Rain.super_.call(this, id, controller);
     
-    this.langFile           = undefined;
     this.weatherUndergound  = undefined;
     this.forecastIO         = undefined;
     this.weatherOpen        = undefined;
@@ -24,7 +23,7 @@ function Rain (id, controller) {
     this.interval           = undefined;
 }
 
-inherits(Rain, AutomationModule);
+inherits(Rain, BaseModule);
 
 _module = Rain;
 
@@ -36,7 +35,6 @@ Rain.prototype.init = function (config) {
     Rain.super_.prototype.init.call(this, config);
 
     var self = this;
-    self.langFile       = self.controller.loadModuleLang("Rain");
     self.popThreshold   = config.popThreshold;
     self.callback       = _.bind(self.checkRain,self);
 
@@ -73,13 +71,8 @@ Rain.prototype.init = function (config) {
 Rain.prototype.initCallback = function() {
     var self = this;
     
-    _.each(self.config.rainSensors,function(deviceId) {
-        var deviceObject = self.controller.devices.get(deviceId);
-        if (typeof(deviceObject) === null) {
-            console.error('[Rain] Could not find rain sensor device');
-        } else {
-            deviceObject.on('change:metrics:level',self.callback);
-        }
+    self.processDeviceList(self.config.rainSensors,function(deviceObject) {
+        deviceObject.on('change:metrics:level',self.callback);
     });
 
     self.controller.devices.each(function(vDev) {
@@ -87,17 +80,17 @@ Rain.prototype.initCallback = function() {
         if (deviceType === 'sensorMultilevel'
             && vDev.get('metrics:probeTitle') === 'WeatherUndergoundCurrent') {
             self.weatherUndergound = vDev;
-            console.log('[Rain] Bind to '+vDev.id);
+            self.log('Bind to '+vDev.id);
             vDev.on('change:metrics:updateTime',self.callback);
         } else if (deviceType === 'sensorMultilevel'
             && vDev.get('metrics:probeTitle') === 'ForecastIOCurrent') {
             self.forecastIO = vDev;
-            console.log('[Rain] Bind to '+vDev.id);
+            self.log('Bind to '+vDev.id);
             vDev.on('change:metrics:updateTime',self.callback);
         } else if (deviceType === 'sensorMultiline'
             && vDev.get('metrics:multilineType') === 'openWeather') {
             self.weatherOpen = vDev;
-            console.log('[Rain] Bind to '+vDev.id);
+            self.log('Bind to '+vDev.id);
             vDev.on('change:metrics:zwaveOpenWeather',self.callback);
         }
     });
@@ -126,11 +119,7 @@ Rain.prototype.stop = function () {
         self.forecastIO.off('change:metrics:change',self.callback);
     }
 
-    _.each(self.config.rainSensors,function(deviceId) {
-        var deviceObject = self.controller.devices.get(deviceId);
-        if (typeof(deviceObject) === null) {
-            return;
-        }
+    self.processDeviceList(self.config.rainSensors,function(deviceObject) {
         deviceObject.off('change:metrics:level',self.callback);
     });
     
@@ -161,15 +150,13 @@ Rain.prototype.checkRain = function() {
     var sources     = [];
     var condition;
     
-    console.log('[Rain] Check rain');
+    self.log('Check rain');
     
-    _.each(self.config.rainSensors,function(deviceId) {
-        var deviceObject = self.controller.devices.get(deviceId);
-        if (deviceObject !== null
-            && deviceObject.get('metrics:level') === 'on') {
+    self.processDeviceList(self.config.rainSensors,function(deviceObject) {
+        if (deviceObject.get('metrics:level') === 'on') {
             rain = true;
             sources.push(deviceId);
-            console.log('[Rain] Detected rain from sensor');
+            self.log('Detected rain from sensor');
         }
     });
     
@@ -180,12 +167,12 @@ Rain.prototype.checkRain = function() {
         if (condition === 'poor'
             || condition === 'snow'
             || self.forecastIO.get('metrics:percipintensity') > intensity) {
-            console.log('[Rain] Detected rain from WeatherUnderground condition');
+            self.log('Detected rain from WeatherUnderground condition');
             sources.push(self.weatherUndergound.id+'/metrics:conditiongroup');
             rain = true;
         } else if (typeof(self.config.popThreshold) !== 'undefined'
             && self.weatherUndergound.get('metrics:pop') >= pop) {
-            console.log('[Rain] Detected rain from WeatherUnderground pop');
+            self.log('Detected rain from WeatherUnderground pop');
             rain = true;
             sources.push(self.weatherUndergound.id+'/metrics:pop');
         }
@@ -197,12 +184,12 @@ Rain.prototype.checkRain = function() {
         if (self.forecastIO.get('metrics:percipintensity') > intensity
             || condition === 'poor'
             || condition === 'snow') {
-            console.log('[Rain] Detected rain from ForecastIO condition');
+            self.log('Detected rain from ForecastIO condition');
             rain = true;
             sources.push(self.forecastIO.id+'/metrics:conditiongroup');
         } else if (typeof(self.config.popThreshold) !== 'undefined'
             && self.forecastIO.get('metrics:pop') >= pop) {
-            console.log('[Rain] Detected rain from ForecastIO pop');
+            self.log('Detected rain from ForecastIO pop');
             rain = true;
             sources.push(self.forecastIO.id+'/metrics:pop');
         }
@@ -220,7 +207,7 @@ Rain.prototype.checkRain = function() {
                 771,
                 901, 902, 906, 960, 961, 962
             ],condition.weather[0].id)) {
-            console.log('[Rain] Detected rain from OpenWeather');
+            self.log('Detected rain from OpenWeather');
             rain = true;
             sources.push(self.weatherOpen.id);
         }
@@ -232,43 +219,41 @@ Rain.prototype.checkRain = function() {
         self.vDev.set('metrics:rain','on');
     } else {
         self.vDev.set('metrics:rain','off');
-        console.log('[Rain] No rain detected');
+        self.log('No rain detected');
     }
     self.vDev.set('metrics:sources',sources);
     
     // Reset timeout on new rain
     if (rain
         && hasTimeout) {
-        console.log('[Rain] Detected rain start during timeout');
+        self.log('Detected rain start during timeout');
         clearTimeout(self.timeout);
         self.timeout = undefined;
         hasTimeout = false;
     // New rain
     } else if (rain
         && level === 'off') {
-        console.log('[Rain] Detected rain start');
+        self.log('Detected rain start');
         self.vDev.set('metrics:change',Math.floor(new Date().getTime() / 1000));
         self.controller.emit("rain.start");
         var openWindows = [];
-        _.each(self.config.windows,function(deviceId) {
-            var deviceObject = self.controller.devices.get(deviceId);
-            if (deviceObject === null) {
-                console.error('[Rain] Could not find window sensor device');
-            } else if (deviceObject.get('metrics:level') === 'on') {
-                var location    = deviceObject.get('location');
-                var room        = _.find(
-                    self.controller.locations, 
-                    function(item){ return (item.id === location); }
-                );
-                
-                var message     = deviceObject.get('metrics:title');
-                if (typeof(room) === 'object') {
-                    message = message + ' (' + room.title + ')';
-                }
-                
-                console.log('[Rain] msg'+message);
-                openWindows.push(message);
+        self.processDeviceList(self.config.windows,function(deviceObject) {
+            if (deviceObject.get('metrics:level') === 'off') {
+                return;
             }
+            var location    = deviceObject.get('location');
+            var room        = _.find(
+                self.controller.locations, 
+                function(item){ return (item.id === location); }
+            );
+            
+            var message     = deviceObject.get('metrics:title');
+            if (typeof(room) === 'object') {
+                message = message + ' (' + room.title + ')';
+            }
+            
+            self.log('msg'+message);
+            openWindows.push(message);
         });
         
         if (openWindows.length > 0) {
@@ -297,7 +282,7 @@ Rain.prototype.checkRain = function() {
         // Timeout
         if (typeof(self.config.timeout) !== 'undefined'
             && parseInt(self.config.timeout,10) > 0) {
-            console.log('[Rain] Detected rain end. Start timeout');
+            self.log('Detected rain end. Start timeout');
             self.vDev.set('metrics:icon','/ZAutomation/api/v1/load/modulemedia/Rain/icon_timeout.png');
             self.timeout = setTimeout(
                 _.bind(self.resetRain,self),
@@ -314,7 +299,7 @@ Rain.prototype.resetRain = function() {
     var self        = this;
     self.timeout    = undefined;
     var level       = self.vDev.get('metrics:level');
-    console.log('[Rain] Untrigger rain sensor');
+    self.log('Untrigger rain sensor');
     self.vDev.set('metrics:change',Math.floor(new Date().getTime() / 1000));
     self.vDev.set('metrics:level','off');
     self.vDev.set('metrics:icon','/ZAutomation/api/v1/load/modulemedia/Rain/icon_norain.png');
