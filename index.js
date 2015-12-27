@@ -65,7 +65,7 @@ Rain.prototype.init = function (config) {
     });
     
     setTimeout(_.bind(self.initCallback,self),60*1000);
-    self.interval = setInterval(_.bind(self.checkRain,self),30*60*1000);
+    self.interval = setInterval(_.bind(self.checkRain,self),15*60*1000);
 };
 
 Rain.prototype.initCallback = function() {
