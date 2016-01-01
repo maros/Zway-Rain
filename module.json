@@ -7,7 +7,7 @@
       "title" : "__title__"
    },
    "dependencies" : ["BaseModule"],
-   "homepage" : "http://k-1.com",
+   "homepage" : "https://github.com/maros/Zway-Rain/",
    "icon" : "icon.png",
    "maturity" : "stable",
    "moduleName" : "Rain",
