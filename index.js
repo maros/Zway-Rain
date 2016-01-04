@@ -16,7 +16,7 @@ function Rain (id, controller) {
     
     this.weatherUndergound  = undefined;
     this.forecastIO         = undefined;
-    this.weatherOpen        = undefined;
+    this.openWeather        = undefined;
     this.timeout            = undefined;
     this.popThreshold       = undefined;
     this.callback           = undefined;
@@ -39,8 +39,8 @@ Rain.prototype.init = function (config) {
     self.callback       = _.bind(self.checkRain,self);
 
     // Create vdev
-    this.vDev = this.controller.devices.create({
-        deviceId: "Rain_" + this.id,
+    self.vDev = this.controller.devices.create({
+        deviceId: "Rain_" + self.id,
         defaults: {
             metrics: {
                 probeTitle: 'Rain',
@@ -89,7 +89,7 @@ Rain.prototype.initCallback = function() {
             vDev.on('change:metrics:updateTime',self.callback);
         } else if (deviceType === 'sensorMultiline'
             && vDev.get('metrics:multilineType') === 'openWeather') {
-            self.weatherOpen = vDev;
+            self.openWeather = vDev;
             self.log('Bind to '+vDev.id);
             vDev.on('change:metrics:zwaveOpenWeather',self.callback);
         }
@@ -112,8 +112,8 @@ Rain.prototype.stop = function () {
     if (typeof(self.weatherUndergound) !== 'undefined') {
         self.weatherUndergound.off('change:metrics:change',self.callback);
     }
-    if (typeof(self.weatherOpen) !== 'undefined') {
-        self.weatherOpen.off('change:metrics:change',self.callback);
+    if (typeof(self.openWeather) !== 'undefined') {
+        self.openWeather.off('change:metrics:change',self.callback);
     }
     if (typeof(self.forecastIO) !== 'undefined') {
         self.forecastIO.off('change:metrics:change',self.callback);
@@ -196,8 +196,8 @@ Rain.prototype.checkRain = function() {
     }
     
     // Handle OpenWeather Module
-    if (typeof(self.weatherOpen) !== 'undefined') {
-        condition = self.weatherOpen.get('metrics:zwaveOpenWeather');
+    if (typeof(self.openWeather) !== 'undefined') {
+        condition = self.openWeather.get('metrics:zwaveOpenWeather');
         // see http://openweathermap.org/weather-conditions
         if (_.contains([
                 200, 201, 202, 210, 211, 212, 221, 230, 231, 232,
@@ -209,7 +209,7 @@ Rain.prototype.checkRain = function() {
             ],condition.weather[0].id)) {
             self.log('Detected rain from OpenWeather');
             rain = true;
-            sources.push(self.weatherOpen.id);
+            sources.push(self.openWeather.id+'/metrics:zwaveOpenWeather:condition:weather:0:id');
         }
     }
     
