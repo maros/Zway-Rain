@@ -155,7 +155,7 @@ Rain.prototype.checkRain = function() {
     self.processDeviceList(self.config.rainSensors,function(deviceObject) {
         if (deviceObject.get('metrics:level') === 'on') {
             rain = true;
-            sources.push(deviceId);
+            sources.push(deviceObject.id+'/metrics:level');
             self.log('Detected rain from sensor');
         }
     });
