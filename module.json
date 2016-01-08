@@ -6,7 +6,9 @@
       "intensityThreshold" : 0,
       "title" : "__m_title__"
    },
-   "dependencies" : ["BaseModule"],
+   "dependencies" : [
+      "BaseModule"
+   ],
    "homepage" : "https://github.com/maros/Zway-Rain/",
    "icon" : "icon.png",
    "maturity" : "stable",
@@ -95,5 +97,5 @@
       "type" : "object"
    },
    "singleton" : true,
-   "version" : 1.04
+   "version" : 1.05
 }

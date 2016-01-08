@@ -1,3 +1,12 @@
+1.05 2016 Jan 08, Fri
+    * Rename title/description key to make module work in appstore
+    * Fix broken sensor detection
+    * Rename variable
+    * Update homepage and readme
+    * More frequent rain checks
+    * Use BaseModule
+    * Regular rain re-checks
+
 1.04 2015 Dec 20, Sun
     * Add checks for rain intensity
     * Documentation
