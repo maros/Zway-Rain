@@ -1,5 +1,5 @@
 {
-   "description" : "This module checks weather conditions (via the OpenWeather, ForecastIO or WeatherUnderground modules) and optional binary sensors to detect rain.",
+   "m_descr" : "This module checks weather conditions (via the OpenWeather, ForecastIO or WeatherUnderground modules) and optional binary sensors to detect rain.",
    "intensity_threshold_helper" : "Will detect rain if rain intensity (rain mm or inches / 1h) is above the given threshold",
    "intensity_threshold_label" : "Rain intensity threshold",
    "pop_threshold_helper" : "Sets the threshold for rain probability forecasts. Rain sensor will be triggered if threshold is exceeded.",
@@ -8,7 +8,7 @@
    "rain_window" : "Rain detected while windows are open!",
    "timeout_helper" : "Timeout in minutes to keep rain state after last rain was detected.",
    "timeout_label" : "Rain Timeout",
-   "title" : "Virtual rain sensor",
+   "m_title" : "Virtual rain sensor",
    "windows_helper" : "A list of window sensors that should be checked if rain starts. Will emit an event if open windows are detected.",
    "windows_label" : "Windows"
 }

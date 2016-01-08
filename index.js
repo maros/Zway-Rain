@@ -44,7 +44,7 @@ Rain.prototype.init = function (config) {
         defaults: {
             metrics: {
                 probeTitle: 'Rain',
-                title: self.langFile.title,
+                title: self.langFile.m_title,
                 level: 'off',
                 rain: 'off',
                 sources: [],
