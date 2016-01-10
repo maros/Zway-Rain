@@ -145,12 +145,12 @@ Rain.prototype.checkRain = function() {
     var rain        = false;
     var level       = self.vDev.get('metrics:level');
     var hasTimeout  = (typeof(self.timeout) !== 'undefined');
-    var intensity   = parseFloat(self.config.intensityThreshold)  || 0;
+    var maxIntensity= parseFloat(self.config.intensityThreshold)  || 0;
     var pop         = parseFloat(self.config.popThreshold) || 0;
     var sources     = [];
-    var condition;
+    var condition,intensity;
     
-    self.log('Check rain');
+    self.log('Check rain (max intensity '+maxIntensity+')');
     
     self.processDeviceList(self.config.rainSensors,function(deviceObject) {
         if (deviceObject.get('metrics:level') === 'on') {
@@ -164,13 +164,14 @@ Rain.prototype.checkRain = function() {
     if (typeof(self.weatherUndergound) !== 'undefined') {
         
         condition = self.weatherUndergound.get('metrics:conditiongroup');
+        intensity = self.weatherUndergound.get('metrics:percipintensity');
         if (condition === 'poor'
             || condition === 'snow') {
-            self.log('Detected rain from WeatherUnderground condition');
+            self.log('Detected rain from WeatherUnderground condition: '+condition);
             sources.push(self.weatherUndergound.id+'/metrics:conditiongroup');
             rain = true;
-        } else if (self.forecastIO.get('metrics:percipintensity') > intensity) {
-            self.log('Detected rain from WeatherUnderground percipintensity');
+        } else if (intensity > maxIntensity) {
+            self.log('Detected rain from WeatherUnderground percipintensity: '+intensity);
             sources.push(self.weatherUndergound.id+'/metrics:percipintensity');
             rain = true;
         } else if (typeof(self.config.popThreshold) !== 'undefined'
@@ -184,13 +185,14 @@ Rain.prototype.checkRain = function() {
     // Handle ForecastIO Module
     if (typeof(self.forecastIO) !== 'undefined') {
         condition = self.forecastIO.get('metrics:conditiongroup');
+        intensity = self.forecastIO.get('metrics:percipintensity');
         if (condition === 'poor'
             || condition === 'snow') {
-            self.log('Detected rain from ForecastIO condition');
+            self.log('Detected rain from ForecastIO condition: '+condition);
             rain = true;
             sources.push(self.forecastIO.id+'/metrics:conditiongroup');
-        } else if (self.forecastIO.get('metrics:percipintensity') > intensity) {
-            self.log('Detected rain from ForecastIO percipintensity');
+        } else if (intensity > maxIntensity) {
+            self.log('Detected rain from ForecastIO percipintensity: '+intensity);
             rain = true;
             sources.push(self.forecastIO.id+'/metrics:percipintensity');
         } else if (typeof(self.config.popThreshold) !== 'undefined'
