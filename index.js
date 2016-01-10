@@ -165,10 +165,13 @@ Rain.prototype.checkRain = function() {
         
         condition = self.weatherUndergound.get('metrics:conditiongroup');
         if (condition === 'poor'
-            || condition === 'snow'
-            || self.forecastIO.get('metrics:percipintensity') > intensity) {
+            || condition === 'snow') {
             self.log('Detected rain from WeatherUnderground condition');
             sources.push(self.weatherUndergound.id+'/metrics:conditiongroup');
+            rain = true;
+        } else if (self.forecastIO.get('metrics:percipintensity') > intensity) {
+            self.log('Detected rain from WeatherUnderground percipintensity');
+            sources.push(self.weatherUndergound.id+'/metrics:percipintensity');
             rain = true;
         } else if (typeof(self.config.popThreshold) !== 'undefined'
             && self.weatherUndergound.get('metrics:pop') >= pop) {
@@ -181,12 +184,15 @@ Rain.prototype.checkRain = function() {
     // Handle ForecastIO Module
     if (typeof(self.forecastIO) !== 'undefined') {
         condition = self.forecastIO.get('metrics:conditiongroup');
-        if (self.forecastIO.get('metrics:percipintensity') > intensity
-            || condition === 'poor'
+        if (condition === 'poor'
             || condition === 'snow') {
             self.log('Detected rain from ForecastIO condition');
             rain = true;
             sources.push(self.forecastIO.id+'/metrics:conditiongroup');
+        } else if (self.forecastIO.get('metrics:percipintensity') > intensity) {
+            self.log('Detected rain from ForecastIO percipintensity');
+            rain = true;
+            sources.push(self.forecastIO.id+'/metrics:percipintensity');
         } else if (typeof(self.config.popThreshold) !== 'undefined'
             && self.forecastIO.get('metrics:pop') >= pop) {
             self.log('Detected rain from ForecastIO pop');
