@@ -48,7 +48,7 @@ Rain.prototype.init = function (config) {
                 level: 'off',
                 rain: 'off',
                 sources: [],
-                icon: '/ZAutomation/api/v1/load/modulemedia/Rain/icon_norain.png'
+                icon: self.imagePath+'/icon_norain.png'
             }
         },
         overlay: {
@@ -222,7 +222,7 @@ Rain.prototype.checkRain = function() {
     }
     
     if (rain) {
-        self.vDev.set('metrics:icon','/ZAutomation/api/v1/load/modulemedia/Rain/icon.png');
+        self.vDev.set('metrics:icon',self.imagePath+'/icon.png');
         self.vDev.set('metrics:level','on');
         self.vDev.set('metrics:rain','on');
     } else {
@@ -291,7 +291,7 @@ Rain.prototype.checkRain = function() {
         if (typeof(self.config.timeout) !== 'undefined'
             && parseInt(self.config.timeout,10) > 0) {
             self.log('Detected rain end. Start timeout');
-            self.vDev.set('metrics:icon','/ZAutomation/api/v1/load/modulemedia/Rain/icon_timeout.png');
+            self.vDev.set('metrics:icon',self.imagePath+'/icon_timeout.png');
             self.timeout = setTimeout(
                 _.bind(self.resetRain,self),
                 (parseInt(self.config.timeout,10) * 1000 * 60)
@@ -310,7 +310,7 @@ Rain.prototype.resetRain = function() {
     self.log('Untrigger rain sensor');
     self.vDev.set('metrics:change',Math.floor(new Date().getTime() / 1000));
     self.vDev.set('metrics:level','off');
-    self.vDev.set('metrics:icon','/ZAutomation/api/v1/load/modulemedia/Rain/icon_norain.png');
+    self.vDev.set('metrics:icon',self.imagePath+'/icon_norain.png');
     self.vDev.set('metrics:sources',[]);
     
     if (level === 'on') {        
