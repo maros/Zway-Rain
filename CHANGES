@@ -1,3 +1,10 @@
+1.06 2016 Mar 19, Sat
+    * Use imagePath from BaseModule
+    * Update installation howto
+    * Add doc link
+    * Clarify rain threshold logs
+    * Clarify rain detection source
+
 1.05 2016 Jan 08, Fri
     * Rename title/description key to make module work in appstore
     * Fix broken sensor detection
