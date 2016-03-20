@@ -43,7 +43,6 @@ Rain.prototype.init = function (config) {
         deviceId: "Rain_" + self.id,
         defaults: {
             metrics: {
-                probeTitle: 'Rain',
                 title: self.langFile.m_title,
                 level: 'off',
                 rain: 'off',
@@ -52,8 +51,8 @@ Rain.prototype.init = function (config) {
             }
         },
         overlay: {
+            probeType: 'rain',
             deviceType: 'sensorBinary',
-            probeTitle: 'Rain'
         },
         handler: function (command,args){
             if (command === 'update'
