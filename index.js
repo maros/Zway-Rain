@@ -169,7 +169,7 @@ Rain.prototype.checkRain = function() {
             self.log('Detected rain from WeatherUnderground condition: '+condition);
             sources.push(self.weatherUndergound.id+'/metrics:conditiongroup');
             rain = true;
-        } else if (intensity > maxIntensity) {
+        } else if (intensity >= maxIntensity) {
             self.log('Detected rain from WeatherUnderground percipintensity: '+intensity);
             sources.push(self.weatherUndergound.id+'/metrics:percipintensity');
             rain = true;
@@ -190,7 +190,7 @@ Rain.prototype.checkRain = function() {
             self.log('Detected rain from ForecastIO condition: '+condition);
             rain = true;
             sources.push(self.forecastIO.id+'/metrics:conditiongroup');
-        } else if (intensity > maxIntensity) {
+        } else if (intensity >= maxIntensity) {
             self.log('Detected rain from ForecastIO percipintensity: '+intensity);
             rain = true;
             sources.push(self.forecastIO.id+'/metrics:percipintensity');
