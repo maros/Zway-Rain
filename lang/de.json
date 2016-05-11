@@ -6,9 +6,10 @@
    "pop_threshold_helper" : "Setzt den Schwellenwert für die Vorhersage der Regenwarscheinlichkeit. Regensensor löst aus, wenn der Grenzwert überschritten wird.",
    "pop_threshold_label" : "Regenwahrscheinlichkeit Schwellenwert",
    "rain_sensors_label" : "Regensensoren",
+   "rain_sensors_helper" : "Optionale binäre Sensors die Regen erkennen",
    "rain_window" : "Regen gemeldet während die Fenster offen sind!",
    "timeout_helper" : "Nachlaufzeit in Minuten um Regen Status zu belassen nachdem der letzte Regen gemeldet wurde.",
    "timeout_label" : "Regen Nachlaufzeit",
-   "windows_helper" : "Eine Liste von Fenstersensoren, die geprüft werden sollen, wenn es zu regnen beginnt. Sendet eine Benachrichtigung, wenn offene Fenster gemeldet werden.",
+   "windows_helper" : "Eine Liste von Fenstersensoren, die geprüft werden sollen, wenn es zu regnen beginnt. Sendet eine Benachrichtigung, wenn offene Fenster gemeldet werden wenn Regen anfängt.",
    "windows_label" : "Fenster"
 }
