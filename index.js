@@ -57,14 +57,14 @@ Rain.prototype.init = function (config) {
         handler: function (command,args){
             if (command === 'update'
                 && typeof(args) !== 'undefined') {
-                self.checkRain();
+                self.checkRain('update');
             }
         },
         moduleId: this.id
     });
     
     setTimeout(_.bind(self.initCallback,self),60*1000);
-    self.interval = setInterval(_.bind(self.checkRain,self),15*60*1000);
+    self.interval = setInterval(self.callback,15*60*1000,'interval');
 };
 
 Rain.prototype.initCallback = function() {
@@ -97,7 +97,7 @@ Rain.prototype.initCallback = function() {
     // Initially turn off
     self.resetRain();
     
-    self.checkRain();
+    self.checkRain('init');
 };
 
 Rain.prototype.stop = function () {
@@ -139,7 +139,7 @@ Rain.prototype.stop = function () {
 // --- Module methods
 // ----------------------------------------------------------------------------
 
-Rain.prototype.checkRain = function() {
+Rain.prototype.checkRain = function(trigger) {
     var self        = this;
     var rain        = false;
     var level       = self.vDev.get('metrics:level');
@@ -148,8 +148,9 @@ Rain.prototype.checkRain = function() {
     var pop         = parseFloat(self.config.popThreshold) || 0;
     var sources     = [];
     var condition,intensity;
+    trigger         = typeof(trigger) === 'string' ? trigger : trigger.id;
     
-    self.log('Check rain (max intensity '+maxIntensity+')');
+    self.log('Check rain (max intensity '+maxIntensity+', triggered by '+trigger+')');
     
     self.processDeviceList(self.config.rainSensors,function(deviceObject) {
         if (deviceObject.get('metrics:level') === 'on') {
