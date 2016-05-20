@@ -1,5 +1,5 @@
 {
-   "intensity_threshold_helper" : "Will detect rain if rain intensity (rain mm or inches / 1h) is above the given threshold",
+   "intensity_threshold_helper" : "Will detect rain if rain intensity (rain mm or inches / 1h depending on the settings of your weather module) is above the given threshold",
    "intensity_threshold_label" : "Rain intensity threshold",
    "m_descr" : "This module checks weather conditions (via the OpenWeather, ForecastIO or WeatherUnderground modules) and optional binary sensors to detect rain.<br>Check <a href=https://github.com/maros/Zway-Rain/blob/master/README.md>github.com/maros/Zway-Rain</a> for detailed documentation.",
    "m_title" : "Virtual Rain Sensor",
@@ -9,7 +9,7 @@
    "rain_sensors_helper" : "Optional binary sensors that detect rain",
    "rain_window" : "Rain detected while windows are open!",
    "timeout_helper" : "Timeout in minutes to keep rain state after last rain was detected.",
-   "timeout_label" : "Rain Timeout",
+   "timeout_label" : "Rain timeout",
    "windows_helper" : "A list of window sensors that should be checked if rain starts. Will emit an event if open windows are detected when rain starts.",
    "windows_label" : "Windows"
 }
