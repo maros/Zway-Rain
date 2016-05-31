@@ -64,7 +64,7 @@ Rain.prototype.init = function (config) {
     });
     
     setTimeout(_.bind(self.initCallback,self),60*1000);
-    self.interval = setInterval(self.callback,15*60*1000,'interval');
+    self.interval = setInterval(_.bind(self.checkRain,self,'interval'),15*60*1000);
 };
 
 Rain.prototype.initCallback = function() {
@@ -148,7 +148,7 @@ Rain.prototype.checkRain = function(trigger) {
     var pop         = parseFloat(self.config.popThreshold) || 0;
     var sources     = [];
     var condition,intensity;
-    trigger         = typeof(trigger) === 'string' ? trigger : trigger.id;
+    trigger         = typeof(trigger) === 'string' ? trigger : typeof(trigger)+trigger+trigger.id;
     
     self.log('Check rain (max intensity '+maxIntensity+', triggered by '+trigger+')');
     
@@ -308,12 +308,12 @@ Rain.prototype.resetRain = function() {
     self.timeout    = undefined;
     var level       = self.vDev.get('metrics:level');
     self.log('Untrigger rain sensor');
-    self.vDev.set('metrics:change',Math.floor(new Date().getTime() / 1000));
     self.vDev.set('metrics:level','off');
+    self.vDev.set('metrics:change',Math.floor(new Date().getTime() / 1000));
     self.vDev.set('metrics:icon',self.imagePath+'/icon_norain.png');
     self.vDev.set('metrics:sources',[]);
     
-    if (level === 'on') {        
+    if (level === 'on') {
         self.controller.emit("rain.stop");
     }
 };
