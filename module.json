@@ -4,10 +4,10 @@
    "defaults" : {
       "description" : "__m_descr__",
       "intensityThreshold" : 0,
+      "popThreshold" : 0,
+      "rainSensors" : [],
       "title" : "__m_title__",
-      "popThreshold": 0,
-      "rainSensors": [],
-      "windows": []
+      "windows" : []
    },
    "dependencies" : [
       "BaseModule"
@@ -101,5 +101,5 @@
       "type" : "object"
    },
    "singleton" : true,
-   "version" : 1.06
+   "version" : "1.07"
 }

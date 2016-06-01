@@ -1,3 +1,13 @@
+1.07 2016 Jun 01, Wed
+    * Fix trigger name
+    * Improve texts
+    * Update module title
+    * Show source of checkRain trigger
+    * Set defaults
+    * Clarify config
+    * Improve comparison
+    * Set probeType
+
 1.06 2016 Mar 19, Sat
     * Use imagePath from BaseModule
     * Update installation howto
