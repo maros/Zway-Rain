@@ -47,7 +47,8 @@ Rain.prototype.init = function (config) {
                 level: 'off',
                 rain: 'off',
                 sources: [],
-                icon: self.imagePath+'/icon_norain.png'
+                icon: self.imagePath+'/icon_norain.png',
+				delayUntil: 0
             }
         },
         overlay: {
@@ -63,8 +64,8 @@ Rain.prototype.init = function (config) {
         moduleId: this.id
     });
     
-    setTimeout(_.bind(self.initCallback,self),60*1000);
-    self.interval = setInterval(_.bind(self.checkRain,self,'interval'),15*60*1000);
+    setTimeout(_.bind(self.initCallback,self),60*1000); // Set timeout to value defined by user.
+    self.interval = setInterval(_.bind(self.checkRain,self,'interval'),15*60*1000); // Check every 15 minutes.
 };
 
 Rain.prototype.initCallback = function() {
@@ -140,14 +141,27 @@ Rain.prototype.stop = function () {
 // ----------------------------------------------------------------------------
 
 Rain.prototype.checkRain = function(trigger) {
+
     var self        = this;
     var rain        = false;
     var level       = self.vDev.get('metrics:level');
+	var delayUntil  = self.vDev.get('metrics:delayUntil');
+	var curTime 	= Math.floor(new Date().getTime())
     var hasTimeout  = (typeof(self.timeout) !== 'undefined');
     var maxIntensity= parseFloat(self.config.intensityThreshold)  || 0;
     var pop         = parseFloat(self.config.popThreshold) || 0;
     var sources     = [];
     var condition,intensity;
+	
+	// No delayUntil - set it for the first time
+    if (typeof(delayUntil) === 'undefined') {
+        self.vDev.set('metrics:delayUntil',0,{ silent: true });
+		}
+	if (curTime < delayUntil) {
+		self.log('Delay Until  = ' + delayUntil);
+		self.log('Timestamp    = ' + curTime);
+		self.log('Minutes left = ' + ((delayUntil - curTime)/60000).toFixed(2));
+		}
     trigger         = typeof(trigger) === 'string' ? trigger : typeof(trigger)+trigger+trigger.id;
     
     self.log('Check rain (max intensity '+maxIntensity+', triggered by '+trigger+')');
@@ -186,8 +200,7 @@ Rain.prototype.checkRain = function(trigger) {
     if (typeof(self.forecastIO) !== 'undefined') {
         condition = self.forecastIO.get('metrics:conditiongroup');
         intensity = self.forecastIO.get('metrics:percipintensity');
-        if (condition === 'poor'
-            || condition === 'snow') {
+        if (condition === 'poor' || condition === 'snow') {
             self.log('Detected rain from ForecastIO condition: '+condition);
             rain = true;
             sources.push(self.forecastIO.id+'/metrics:conditiongroup');
@@ -281,33 +294,48 @@ Rain.prototype.checkRain = function(trigger) {
                 event:      "alarm",
                 message:    message
             });
-        }
+		}
+	// Reboot Safe Delay Timer
+    } else if (trigger == 'init' && ! rain && Math.floor(new Date().getTime()) < delayUntil) {
+        self.log('Restored rain timeout');
+		self.vDev.set('metrics:level','on');
+        self.vDev.set('metrics:icon',self.imagePath+'/icon_timeout.png');
+		hasTimeout = true;
+		delay = (delayUntil - (Math.floor(new Date().getTime())))
+        self.timeout = setTimeout(
+            _.bind(self.resetRain,self), delay
+        );
+		self.log('Timeout in '+ ((delayUntil - curTime)/60000).toFixed(2) +' minutes');
     // Stop rain
-    } else if (! rain
-        && level === 'on'
-        && ! hasTimeout) {
-        
+    } else if (! rain && level === 'on' && ! hasTimeout) {
+
         // Timeout
         if (typeof(self.config.timeout) !== 'undefined'
             && parseInt(self.config.timeout,10) > 0) {
             self.log('Detected rain end. Start timeout');
             self.vDev.set('metrics:icon',self.imagePath+'/icon_timeout.png');
+			delay = (parseInt(self.config.timeout,10) * 1000 * 60)
+			delayUntil = Math.floor(new Date().getTime() / 1000) + delay
+			self.vDev.set('metrics:delayUntil', delayUntil);
             self.timeout = setTimeout(
                 _.bind(self.resetRain,self),
                 (parseInt(self.config.timeout,10) * 1000 * 60)
             );
-        // Imediate off
+			self.log('Timestamp    = ' + Math.floor(new Date().getTime() / 1000));
+			self.log('delayUntil   = ' + delayUntil);
+			self.log('Minutes left = ' + ((delayUntil - curTime)/60000).toFixed(2));
+        // Immediate off
         } else {
             self.resetRain();
         }
-    }
+    } 
 };
 
 Rain.prototype.resetRain = function() {
     var self        = this;
     self.timeout    = undefined;
     var level       = self.vDev.get('metrics:level');
-    self.log('Untrigger rain sensor');
+    self.log('Clear rain sensor');
     self.vDev.set('metrics:level','off');
     self.vDev.set('metrics:change',Math.floor(new Date().getTime() / 1000));
     self.vDev.set('metrics:icon',self.imagePath+'/icon_norain.png');
