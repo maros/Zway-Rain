@@ -175,6 +175,7 @@ Rain.prototype.checkRain = function(trigger) {
             sources.push(self.weatherUndergound.id+'/metrics:percipintensity');
             rain = true;
         } else if (typeof(self.config.popThreshold) !== 'undefined'
+            && pop > 0
             && self.weatherUndergound.get('metrics:pop') >= pop) {
             self.log('Detected rain from WeatherUnderground pop');
             rain = true;
@@ -196,6 +197,7 @@ Rain.prototype.checkRain = function(trigger) {
             rain = true;
             sources.push(self.forecastIO.id+'/metrics:percipintensity');
         } else if (typeof(self.config.popThreshold) !== 'undefined'
+            && pop > 0
             && self.forecastIO.get('metrics:pop') >= pop) {
             self.log('Detected rain from ForecastIO pop');
             rain = true;
