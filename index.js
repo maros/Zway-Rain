@@ -124,11 +124,7 @@ Rain.prototype.stop = function () {
         deviceObject.off('change:metrics:level',self.callback);
     });
     
-    if (typeof(self.timeout) !== 'undefined') {
-        clearTimeout(self.timeout);
-        self.timeout = undefined;
-    }
-    
+    self.clearRainTimeout();
     self.clearPollTimeout();
     
     clearInterval(self.interval);
@@ -284,8 +280,7 @@ Rain.prototype.checkRain = function(trigger) {
     if (rain
         && hasTimeout) {
         self.log('Detected rain start during timeout');
-        clearTimeout(self.timeout);
-        self.timeout = undefined;
+        self.clearRainTimeout();
         hasTimeout = false;
     // New rain
     } else if (rain
@@ -340,11 +335,7 @@ Rain.prototype.checkRain = function(trigger) {
         if (typeof(self.config.timeout) !== 'undefined'
             && parseInt(self.config.timeout,10) > 0) {
             self.log('Detected rain end. Start timeout');
-            self.vDev.set('metrics:icon',self.imagePath+'/icon_timeout.png');
-            self.timeout = setTimeout(
-                _.bind(self.resetRain,self),
-                (parseInt(self.config.timeout,10) * 1000 * 60)
-            );
+            self.startRainTimeout();
         // Imediate off
         } else {
             self.resetRain();
@@ -352,9 +343,29 @@ Rain.prototype.checkRain = function(trigger) {
     }
 };
 
+Rain.prototype.startRainTimeout = function(timeout) {
+    var self        = this;
+    timeout         = timeout || parseInt(self.config.timeout,10);
+    
+    self.clearRainTimeout();
+    self.vDev.set('metrics:icon',self.imagePath+'/icon_timeout.png');
+    self.timeout = setTimeout(
+        _.bind(self.resetRain,self),
+        (timeout * 1000 * 60)
+    );
+};
+
+Rain.prototype.clearRainTimeout = function() {
+    var self        = this;
+    if (typeof(self.timeout) !== 'undefined') {
+        clearTimeout(self.timeout);
+    }
+    self.timeout = undefined;
+};
+
 Rain.prototype.resetRain = function() {
     var self        = this;
-    self.timeout    = undefined;
+    self.clearRainTimeout();
     var level       = self.vDev.get('metrics:level');
     self.log('Untrigger rain sensor');
     self.vDev.set('metrics:level','off');
