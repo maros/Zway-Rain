@@ -21,6 +21,7 @@ function Rain (id, controller) {
     this.popThreshold       = undefined;
     this.callback           = undefined;
     this.interval           = undefined;
+    this.pollTimeout        = undefined;
 }
 
 inherits(Rain, BaseModule);
@@ -64,7 +65,7 @@ Rain.prototype.init = function (config) {
     });
     
     setTimeout(_.bind(self.initCallback,self),60*1000);
-    self.interval = setInterval(_.bind(self.checkRain,self,'interval'),15*60*1000);
+    self.interval = setInterval(_.bind(self.checkRain,self,'interval'),10*60*1000);
 };
 
 Rain.prototype.initCallback = function() {
@@ -96,6 +97,7 @@ Rain.prototype.initCallback = function() {
     
     // Initially turn off
     self.resetRain();
+    self.nextPoll();
     
     self.checkRain('init');
 };
@@ -127,6 +129,8 @@ Rain.prototype.stop = function () {
         self.timeout = undefined;
     }
     
+    self.clearPollTimeout();
+    
     clearInterval(self.interval);
     self.interval = undefined;
     
@@ -139,14 +143,55 @@ Rain.prototype.stop = function () {
 // --- Module methods
 // ----------------------------------------------------------------------------
 
+Rain.prototype.nextPoll = function() {
+    var self    = this;
+    // No poll
+    if (typeof(self.config.rainSensorPoll) === 'undefined'
+        || self.config.rainSensorPoll === 0) {
+        return;
+    }
+    
+    var poll    = self.config.rainSensorPoll;
+    var pop     = self.vDev.get('metrics:pop');
+    if (typeof(pop) === 'number') {
+        poll = poll * pop / 100;
+    }
+    poll = Math.max(poll,60);
+    poll = poll * 1000;
+    
+    self.clearPollTimeout();
+    self.pollTimeout = setTimeout(_.bind(self.pollSensor,self),poll);
+    return;
+};
+
+Rain.prototype.clearPollTimeout = function() {
+    var self    = this;
+    if (typeof(self.pollTimeout) !== 'undefined') {
+        clearTimeout(self.pollTimeout);
+    }
+    self.pollTimeout = undefined;
+    return;
+};
+
+Rain.prototype.pollSensor = function() {
+    var self    = this;
+    
+    self.log('Poll rain sensors');
+    self.processDeviceList(self.config.rainSensors,function(deviceObject) {
+        deviceObject.performCommand('update');
+    });
+    self.nextPoll();
+};
+
 Rain.prototype.checkRain = function(trigger) {
     var self        = this;
     var rain        = false;
     var level       = self.vDev.get('metrics:level');
     var hasTimeout  = (typeof(self.timeout) !== 'undefined');
     var maxIntensity= parseFloat(self.config.intensityThreshold)  || 0;
-    var pop         = parseFloat(self.config.popThreshold) || 0;
+    var popThreshold= parseFloat(self.config.popThreshold) || 0;
     var sources     = [];
+    var pop         = null;
     var condition,intensity;
     trigger         = typeof(trigger) === 'string' ? trigger : typeof(trigger)+trigger+trigger.id;
     
@@ -162,9 +207,9 @@ Rain.prototype.checkRain = function(trigger) {
     
     // Handle WeatherUndergound Module
     if (typeof(self.weatherUndergound) !== 'undefined') {
-        
-        condition = self.weatherUndergound.get('metrics:conditiongroup');
-        intensity = self.weatherUndergound.get('metrics:percipintensity');
+        condition   = self.weatherUndergound.get('metrics:conditiongroup');
+        intensity   = self.weatherUndergound.get('metrics:percipintensity');
+        pop         = self.weatherUndergound.get('metrics:pop');
         if (condition === 'poor'
             || condition === 'snow') {
             self.log('Detected rain from WeatherUnderground condition: '+condition);
@@ -175,8 +220,8 @@ Rain.prototype.checkRain = function(trigger) {
             sources.push(self.weatherUndergound.id+'/metrics:percipintensity');
             rain = true;
         } else if (typeof(self.config.popThreshold) !== 'undefined'
-            && pop > 0
-            && self.weatherUndergound.get('metrics:pop') >= pop) {
+            && popThreshold > 0
+            && pop >= popThreshold) {
             self.log('Detected rain from WeatherUnderground pop');
             rain = true;
             sources.push(self.weatherUndergound.id+'/metrics:pop');
@@ -185,8 +230,9 @@ Rain.prototype.checkRain = function(trigger) {
     
     // Handle ForecastIO Module
     if (typeof(self.forecastIO) !== 'undefined') {
-        condition = self.forecastIO.get('metrics:conditiongroup');
-        intensity = self.forecastIO.get('metrics:percipintensity');
+        condition   = self.forecastIO.get('metrics:conditiongroup');
+        intensity   = self.forecastIO.get('metrics:percipintensity');
+        pop         = self.forecastIO.get('metrics:pop');
         if (condition === 'poor'
             || condition === 'snow') {
             self.log('Detected rain from ForecastIO condition: '+condition);
@@ -197,8 +243,8 @@ Rain.prototype.checkRain = function(trigger) {
             rain = true;
             sources.push(self.forecastIO.id+'/metrics:percipintensity');
         } else if (typeof(self.config.popThreshold) !== 'undefined'
-            && pop > 0
-            && self.forecastIO.get('metrics:pop') >= pop) {
+            && popThreshold > 0
+            && pop >= popThreshold) {
             self.log('Detected rain from ForecastIO pop');
             rain = true;
             sources.push(self.forecastIO.id+'/metrics:pop');
@@ -223,6 +269,7 @@ Rain.prototype.checkRain = function(trigger) {
         }
     }
     
+    self.vDev.set('metrics:pop',pop);
     if (rain) {
         self.vDev.set('metrics:icon',self.imagePath+'/icon.png');
         self.vDev.set('metrics:level','on');
