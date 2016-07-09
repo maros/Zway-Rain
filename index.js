@@ -48,6 +48,7 @@ Rain.prototype.init = function (config) {
                 level: 'off',
                 rain: 'off',
                 sources: [],
+                lastRain: 0,
                 icon: self.imagePath+'/icon_norain.png'
             }
         },
@@ -186,6 +187,7 @@ Rain.prototype.checkRain = function(trigger) {
     var hasTimeout  = (typeof(self.timeout) !== 'undefined');
     var maxIntensity= parseFloat(self.config.intensityThreshold)  || 0;
     var popThreshold= parseFloat(self.config.popThreshold) || 0;
+    var now         = Math.floor(new Date().getTime() / 1000);
     var sources     = [];
     var pop         = null;
     var condition,intensity;
@@ -270,6 +272,7 @@ Rain.prototype.checkRain = function(trigger) {
         self.vDev.set('metrics:icon',self.imagePath+'/icon.png');
         self.vDev.set('metrics:level','on');
         self.vDev.set('metrics:rain','on');
+        self.vDev.set('metrics:lastRain',now);
     } else {
         self.vDev.set('metrics:rain','off');
         self.log('No rain detected');
