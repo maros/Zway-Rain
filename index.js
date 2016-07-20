@@ -96,8 +96,25 @@ Rain.prototype.initCallback = function() {
         }
     });
     
-    // Initially turn off
-    self.resetRain();
+    // Reinit rain timeout
+    if (typeof(self.config.timeout) !== 'undefined'
+        && parseInt(self.config.timeout,10) > 0) {
+        // Reinit timeout
+        var now         = Math.floor(new Date().getTime() / 1000);
+        var timeout     = parseInt(self.config.timeout,10);
+        var lastRain    = self.vDev.get('metrics:lastRain');
+        var limit       = lastRain + (timeout * 60);
+        var timeoutLeft = limit - now;
+        if (timeoutLeft > 60) {
+            self.log('Restart timeout');
+            self.startRainTimeout(timeoutLeft);
+        } else {
+            self.resetRain();
+        }
+    } else {
+        // Initially turn off
+        self.resetRain();
+    }
     self.nextPoll();
     
     self.checkRain('init');
