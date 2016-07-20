@@ -1,3 +1,11 @@
+1.08 2016 Jul 20, Wed
+    * Reinit timeout after module reload
+    * Store timestamp of last rain
+    * Refactor timeout handling to make it reusable
+    * Translate
+    * Poll rain sensors
+    * Ignore pop when it is set to zero
+
 1.07 2016 Jun 01, Wed
     * Fix trigger name
     * Improve texts
