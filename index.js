@@ -14,6 +14,7 @@ function Rain (id, controller) {
     // Call superconstructor first (AutomationModule)
     Rain.super_.call(this, id, controller);
     
+    this.weatherAlert       = undefined;
     this.weatherUndergound  = undefined;
     this.forecastIO         = undefined;
     this.openWeather        = undefined;
@@ -78,16 +79,21 @@ Rain.prototype.initCallback = function() {
 
     self.controller.devices.each(function(vDev) {
         var deviceType = vDev.get('deviceType');
-        if (deviceType === 'sensorMultilevel'
-            && vDev.get('metrics:probeTitle') === 'WeatherUndergoundCurrent') {
-            self.weatherUndergound = vDev;
-            self.log('Bind to '+vDev.id);
-            vDev.on('change:metrics:updateTime',self.callback);
-        } else if (deviceType === 'sensorMultilevel'
-            && vDev.get('metrics:probeTitle') === 'ForecastIOCurrent') {
-            self.forecastIO = vDev;
-            self.log('Bind to '+vDev.id);
-            vDev.on('change:metrics:updateTime',self.callback);
+        if (deviceType === 'sensorMultilevel') {
+            if (vDev.get('metrics:probeTitle') === 'WeatherUndergoundCurrent') {
+                self.weatherUndergound = vDev;
+                self.log('Bind to '+vDev.id);
+                vDev.on('change:metrics:updateTime',self.callback);
+            } else if (vDev.get('metrics:probeTitle') === 'ForecastIOCurrent') {
+                self.forecastIO = vDev;
+                self.log('Bind to '+vDev.id);
+                vDev.on('change:metrics:updateTime',self.callback);
+            } else if (vDev.get('metrics:probeTitle') === 'WeatherAlert'
+                && _.intersection(vDev.get('alertType'),['rain','snow','thunderstorm','freezing_rain']).length > 0) {
+                self.weatherAlert = vDev;
+                self.log('Bind to '+vDev.id);
+                vDev.on('change:metrics:updateTime',self.callback);
+            }
         } else if (deviceType === 'sensorMultiline'
             && vDev.get('metrics:multilineType') === 'openWeather') {
             self.openWeather = vDev;
@@ -136,6 +142,9 @@ Rain.prototype.stop = function () {
     }
     if (typeof(self.forecastIO) !== 'undefined') {
         self.forecastIO.off('change:metrics:change',self.callback);
+    }
+    if (typeof(self.weatherAlert) !== 'undefined') {
+        self.weatherAlert.off('change:metrics:change',self.callback);
     }
 
     self.processDeviceList(self.config.rainSensors,function(deviceObject) {
@@ -263,6 +272,16 @@ Rain.prototype.checkRain = function(trigger) {
             self.log('Detected rain from ForecastIO pop');
             rain = true;
             sources.push(self.forecastIO.id+'/metrics:pop');
+        }
+    }
+    
+    // Handle WeatherAlert Module
+    if (typeof(self.weatherAlert) !== 'undefined') {
+        condition = self.weatherAlert.get('metrics:type');
+        if (level > 2) {
+            self.log('Detected rain from WeatherAlert level: '+level);
+            rain = true;
+            sources.push(self.weatherAlert.id+'/metrics:conditiongroup');
         }
     }
     
