@@ -5,8 +5,8 @@
       "description" : "__m_descr__",
       "intensityThreshold" : 0,
       "popThreshold" : 0,
+      "rainSensorPoll" : 0,
       "rainSensors" : [],
-      "rainSensorPoll": 0,
       "title" : "__m_title__",
       "windows" : []
    },
@@ -29,6 +29,11 @@
             "label" : "__pop_threshold_label__",
             "order" : 2
          },
+         "rainSensorPoll" : {
+            "helper" : "__rain_sensor_poll_helper__",
+            "label" : "__rain_sensor_poll_label__",
+            "order" : 5
+         },
          "rainSensors" : {
             "fields" : {
                "item" : {
@@ -41,11 +46,6 @@
             "helper" : "__rain_sensors_helper__",
             "label" : "__rain_sensors_label__",
             "order" : 4
-         },
-         "rainSensorPoll": {
-            "helper" : "__rain_sensor_poll_helper__",
-            "label" : "__rain_sensor_poll_label__",
-            "order" : 5
          },
          "timeout" : {
             "helper" : "__timeout_helper__",
@@ -73,14 +73,14 @@
    },
    "schema" : {
       "properties" : {
-         "rainSensorPoll": {
-            "type" : "number"
-         },
          "intensityThreshold" : {
             "type" : "number"
          },
          "popThreshold" : {
             "type" : "integer"
+         },
+         "rainSensorPoll" : {
+            "type" : "number"
          },
          "rainSensors" : {
             "items" : {
@@ -110,5 +110,5 @@
       "type" : "object"
    },
    "singleton" : true,
-   "version" : "1.07"
+   "version" : "1.09"
 }

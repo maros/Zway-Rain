@@ -1,3 +1,6 @@
+1.09 2016 Jul 31, Sun
+    * Add support for WeatherAlert module
+
 1.08 2016 Jul 20, Wed
     * Reinit timeout after module reload
     * Store timestamp of last rain
