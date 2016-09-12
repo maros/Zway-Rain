@@ -1,7 +1,7 @@
 {
    "intensity_threshold_helper" : "Will detect rain if rain intensity (rain mm or inches / 1h depending on the settings of your weather module) is above the given threshold",
    "intensity_threshold_label" : "Rain intensity threshold",
-   "m_descr" : "This module checks weather conditions (via the OpenWeather, ForecastIO or WeatherUnderground modules) and optional binary sensors to detect rain.<br>Check <a href=https://github.com/maros/Zway-Rain/blob/master/README.md>github.com/maros/Zway-Rain</a> for detailed documentation.",
+   "m_descr" : "This module checks weather conditions (via the OpenWeather, ForecastIO, WeatherUnderground or Weather Alert modules) and optional binary sensors to detect rain.<br>Check <a href=https://github.com/maros/Zway-Rain/blob/master/README.md>github.com/maros/Zway-Rain</a> for detailed documentation.",
    "m_title" : "Virtual Rain Sensor",
    "pop_threshold_helper" : "Sets the threshold for rain probability forecasts. Rain sensor will be triggered if threshold is exceeded.",
    "pop_threshold_label" : "Probability of rain threshold",
