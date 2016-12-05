@@ -13,7 +13,7 @@ Description:
 function Rain (id, controller) {
     // Call superconstructor first (AutomationModule)
     Rain.super_.call(this, id, controller);
-    
+
     this.weatherAlert       = undefined;
     this.weatherUndergound  = undefined;
     this.forecastIO         = undefined;
@@ -65,14 +65,14 @@ Rain.prototype.init = function (config) {
         },
         moduleId: this.id
     });
-    
+
     setTimeout(_.bind(self.initCallback,self),60*1000);
     self.interval = setInterval(_.bind(self.checkRain,self,'interval'),10*60*1000);
 };
 
 Rain.prototype.initCallback = function() {
     var self = this;
-    
+
     self.processDeviceList(self.config.rainSensors,function(deviceObject) {
         deviceObject.on('change:metrics:level',self.callback);
     });
@@ -101,7 +101,7 @@ Rain.prototype.initCallback = function() {
             vDev.on('change:metrics:zwaveOpenWeather',self.callback);
         }
     });
-    
+
     // Reinit rain timeout
     if (typeof(self.config.timeout) !== 'undefined'
         && parseInt(self.config.timeout,10) > 0) {
@@ -122,13 +122,13 @@ Rain.prototype.initCallback = function() {
         self.resetRain();
     }
     self.nextPoll();
-    
+
     self.checkRain('init');
 };
 
 Rain.prototype.stop = function () {
     var self = this;
-    
+
     if (self.vDev) {
         self.controller.devices.remove(self.vDev.id);
         self.vDev = undefined;
@@ -150,15 +150,15 @@ Rain.prototype.stop = function () {
     self.processDeviceList(self.config.rainSensors,function(deviceObject) {
         deviceObject.off('change:metrics:level',self.callback);
     });
-    
+
     self.clearRainTimeout();
     self.clearPollTimeout();
-    
+
     clearInterval(self.interval);
     self.interval = undefined;
-    
+
     self.callback = undefined;
-    
+
     Rain.super_.prototype.stop.call(this);
 };
 
@@ -173,7 +173,7 @@ Rain.prototype.nextPoll = function() {
         || self.config.rainSensorPoll === 0) {
         return;
     }
-    
+
     var poll    = self.config.rainSensorPoll;
     var pop     = self.vDev.get('metrics:pop');
     if (typeof(pop) === 'number') {
@@ -181,7 +181,7 @@ Rain.prototype.nextPoll = function() {
     }
     poll = Math.max(poll,60);
     poll = poll * 1000;
-    
+
     self.clearPollTimeout();
     self.pollTimeout = setTimeout(_.bind(self.pollSensor,self),poll);
     return;
@@ -198,7 +198,7 @@ Rain.prototype.clearPollTimeout = function() {
 
 Rain.prototype.pollSensor = function() {
     var self    = this;
-    
+
     self.log('Poll rain sensors');
     self.processDeviceList(self.config.rainSensors,function(deviceObject) {
         deviceObject.performCommand('update');
@@ -218,9 +218,9 @@ Rain.prototype.checkRain = function(trigger) {
     var pop         = null;
     var condition,intensity;
     trigger         = typeof(trigger) === 'string' ? trigger : typeof(trigger)+trigger+trigger.id;
-    
+
     self.log('Check rain (max intensity '+maxIntensity+', triggered by '+trigger+')');
-    
+
     self.processDeviceList(self.config.rainSensors,function(deviceObject) {
         if (deviceObject.get('metrics:level') === 'on') {
             rain = true;
@@ -228,7 +228,7 @@ Rain.prototype.checkRain = function(trigger) {
             self.log('Detected rain from sensor');
         }
     });
-    
+
     // Handle WeatherUndergound Module
     if (typeof(self.weatherUndergound) !== 'undefined') {
         condition   = self.weatherUndergound.get('metrics:conditiongroup');
@@ -251,7 +251,7 @@ Rain.prototype.checkRain = function(trigger) {
             sources.push(self.weatherUndergound.id+'/metrics:pop');
         }
     }
-    
+
     // Handle ForecastIO Module
     if (typeof(self.forecastIO) !== 'undefined') {
         condition   = self.forecastIO.get('metrics:conditiongroup');
@@ -274,7 +274,7 @@ Rain.prototype.checkRain = function(trigger) {
             sources.push(self.forecastIO.id+'/metrics:pop');
         }
     }
-    
+
     // Handle WeatherAlert Module
     if (typeof(self.weatherAlert) !== 'undefined') {
         condition = self.weatherAlert.get('metrics:type');
@@ -284,7 +284,7 @@ Rain.prototype.checkRain = function(trigger) {
             sources.push(self.weatherAlert.id+'/metrics:conditiongroup');
         }
     }
-    
+
     // Handle OpenWeather Module
     if (typeof(self.openWeather) !== 'undefined') {
         condition = self.openWeather.get('metrics:zwaveOpenWeather');
@@ -302,7 +302,7 @@ Rain.prototype.checkRain = function(trigger) {
             sources.push(self.openWeather.id+'/metrics:zwaveOpenWeather:condition:weather:0:id');
         }
     }
-    
+
     self.vDev.set('metrics:pop',pop);
     if (rain) {
         self.vDev.set('metrics:icon',self.imagePath+'/icon.png');
@@ -314,7 +314,7 @@ Rain.prototype.checkRain = function(trigger) {
         self.log('No rain detected');
     }
     self.vDev.set('metrics:sources',sources);
-    
+
     // Reset timeout on new rain
     if (rain
         && hasTimeout) {
@@ -334,28 +334,28 @@ Rain.prototype.checkRain = function(trigger) {
             }
             var location    = deviceObject.get('location');
             var room        = _.find(
-                self.controller.locations, 
+                self.controller.locations,
                 function(item){ return (item.id === location); }
             );
-            
+
             var message     = deviceObject.get('metrics:title');
             if (typeof(room) === 'object') {
                 message = message + ' (' + room.title + ')';
             }
-            
+
             self.log('msg'+message);
             openWindows.push(message);
         });
-        
+
         if (openWindows.length > 0) {
             var message =  self.langFile.rain_window + '\n' + openWindows.join('\n');
             self.controller.addNotification(
-                "warning", 
+                "warning",
                 message,
-                "module", 
+                "module",
                 "Rain"
             );
-            
+
             self.controller.emit("security.rain.alarm",{
                 id:         self.id,
                 title:      self.vDev.get('metrics:title'),
@@ -369,7 +369,7 @@ Rain.prototype.checkRain = function(trigger) {
     } else if (! rain
         && level === 'on'
         && ! hasTimeout) {
-        
+
         // Timeout
         if (typeof(self.config.timeout) !== 'undefined'
             && parseInt(self.config.timeout,10) > 0) {
@@ -385,7 +385,7 @@ Rain.prototype.checkRain = function(trigger) {
 Rain.prototype.startRainTimeout = function(timeout) {
     var self        = this;
     timeout         = timeout || parseInt(self.config.timeout,10);
-    
+
     self.clearRainTimeout();
     self.vDev.set('metrics:icon',self.imagePath+'/icon_timeout.png');
     self.timeout = setTimeout(
@@ -411,7 +411,7 @@ Rain.prototype.resetRain = function() {
     self.vDev.set('metrics:change',Math.floor(new Date().getTime() / 1000));
     self.vDev.set('metrics:icon',self.imagePath+'/icon_norain.png');
     self.vDev.set('metrics:sources',[]);
-    
+
     if (level === 'on') {
         self.controller.emit("rain.stop");
     }
