@@ -7,7 +7,7 @@ currently rains or not. The sensor can query
 * the standard OpenWeather module
 * the WeatherUndergound module from https://github.com/maros/Zway-WeatherUnderground
 * the ForecastIO module from https://github.com/maros/Zway-ForecastIO
-* the WeatherAlert module from https://github.com/maros/Zway-WeatherAlert for rain-related severe weather conditions (light rain will not be detected)
+* the WeatherAlert module from https://github.com/maros/Zway-WeatherAlert for rain-related severe weather conditions (light rain will not be reported)
 
 If one of the sources detects rain, then the rain sensor will be triggered.
 Untriggering after rain stops may have an optional timeout period.
@@ -49,11 +49,9 @@ Window sensors to check when rain starts.
 
 Will be called whenever rain starts.
 
-# Events
+## rain.stop
 
-## rain.start, rain.stop
-
-Emits an event when rain start or stop is detected
+Emits when the rain stops and the optional timeout period has passed
 
 ## security.rain.alarm
 
