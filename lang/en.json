@@ -3,6 +3,8 @@
    "intensity_threshold_label" : "Rain intensity threshold",
    "m_descr" : "This module checks weather conditions (via the OpenWeather, ForecastIO, WeatherUnderground or Weather Alert modules) and optional binary sensors to detect rain.<br>Check <a href=https://github.com/maros/Zway-Rain/blob/master/README.md>github.com/maros/Zway-Rain</a> for detailed documentation.",
    "m_title" : "Virtual Rain Sensor",
+   "open_weather_drizzle_helper" : "Check the box to disable the 'drizzle' group of conditions.  See http://openweathermap.org/weather-conditions for descriptions.",
+   "open_weather_drizzle_label" : "Disable Open Weather 'drizzle' conditions",
    "pop_threshold_helper" : "Sets the threshold for rain probability forecasts. Rain sensor will be triggered if threshold is exceeded.",
    "pop_threshold_label" : "Probability of rain threshold",
    "rain_sensor_poll_helper" : "Maximum poll interval for rain sensors in seconds. Actual poll interval will be shorther the higher the rain probability",

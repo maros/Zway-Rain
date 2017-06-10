@@ -1,6 +1,6 @@
 /*** Rain Z-Way HA module *******************************************
 
-Version: 1.09
+Version: 1.10
 (c) Maroš Kollár, 2015-2017
 -----------------------------------------------------------------------------
 Author: Maroš Kollár <maros@k-1.com>
@@ -289,7 +289,21 @@ Rain.prototype.checkRain = function(trigger) {
     if (typeof(self.openWeather) !== 'undefined') {
         condition = self.openWeather.get('metrics:zwaveOpenWeather');
         // see http://openweathermap.org/weather-conditions
-        if (_.contains([
+        if (self.openWeatherDrizzleDisabled) {
+            if (_.contains([
+                200, 201, 202, 210, 211, 212, 221, 230, 231, 232,
+                500, 501, 502, 503, 504, 511, 520, 521, 522, 531,
+                600, 601, 602, 611, 612, 615, 616, 620, 621, 622,
+                771,
+                901, 902, 906, 960, 961, 962
+            ],condition.weather[0].id)) {
+            self.log('Detected rain from OpenWeather');
+            rain = true;
+            sources.push(self.openWeather.id+'/metrics:zwaveOpenWeather:condition:weather:0:id');
+            }
+        }
+        else {
+            if (_.contains([
                 200, 201, 202, 210, 211, 212, 221, 230, 231, 232,
                 300, 301, 302, 310, 311, 312, 313, 314, 321,
                 500, 501, 502, 503, 504, 511, 520, 521, 522, 531,
@@ -300,6 +314,7 @@ Rain.prototype.checkRain = function(trigger) {
             self.log('Detected rain from OpenWeather');
             rain = true;
             sources.push(self.openWeather.id+'/metrics:zwaveOpenWeather:condition:weather:0:id');
+            }
         }
     }
 
