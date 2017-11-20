@@ -217,7 +217,7 @@ Rain.prototype.checkRain = function(trigger) {
     var sources     = [];
     var pop         = null;
     var condition,intensity;
-    trigger         = typeof(trigger) === 'string' ? trigger : typeof(trigger)+trigger+trigger.id;
+    trigger         = typeof(trigger) === 'string' ? trigger : trigger.id;
 
     self.log('Check rain (max intensity '+maxIntensity+', triggered by '+trigger+')');
 
@@ -321,6 +321,7 @@ Rain.prototype.checkRain = function(trigger) {
         self.log('Detected rain start during timeout');
         self.clearRainTimeout();
         hasTimeout = false;
+        return;
     // New rain
     } else if (rain
         && level === 'off') {
@@ -365,6 +366,7 @@ Rain.prototype.checkRain = function(trigger) {
                 message:    message
             });
         }
+        return;
     // Stop rain
     } else if (! rain
         && level === 'on'
