@@ -110,5 +110,5 @@
       "type" : "object"
    },
    "singleton" : true,
-   "version" : "1.09"
+   "version" : "1.10"
 }

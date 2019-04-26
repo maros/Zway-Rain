@@ -1,3 +1,11 @@
+1.10 2019 Apr 26, Fri
+    * Mention deprecation of WeatherUnderground
+    * Minor changes
+    * Update module documentation
+    * Update copyright
+    * Whitespace cleanup
+    * Mention weather alert module in docs and module description
+
 1.09 2016 Jul 31, Sun
     * Add support for WeatherAlert module
 
