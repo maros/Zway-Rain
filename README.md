@@ -5,9 +5,10 @@ currently rains or not. The sensor can query
 
 * multiple binary sensors (eg. a FIB_FGBS-001 with an attached rain sensor)
 * the standard OpenWeather module
-* the WeatherUndergound module from https://github.com/maros/Zway-WeatherUnderground
 * the ForecastIO module from https://github.com/maros/Zway-ForecastIO
 * the WeatherAlert module from https://github.com/maros/Zway-WeatherAlert for rain-related severe weather conditions (light rain will not be reported)
+* the WeatherUndergound module from https://github.com/maros/Zway-WeatherUnderground (no new API keys
+are available!)
 
 If one of the sources detects rain, then the rain sensor will be triggered.
 Untriggering after rain stops may have an optional timeout period.
