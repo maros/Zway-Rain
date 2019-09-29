@@ -3,6 +3,8 @@
    "intensity_threshold_label" : "Regenitensität Schwellenwert",
    "m_descr" : "Dieses Modul prüft die Wetterbedingungen (mit OpenWeather, ForecastIO, WeatherUnderground oder Unwetterwarnungs Modulen) und optional binären Sensoren um Regen zu melden.<br>Siehe <a href=https://github.com/maros/Zway-Rain/blob/master/README.md>github.com/maros/Zway-Rain</a> für detailliertere Dokumentation.",
    "m_title" : "Virtueller Regensensor",
+   "open_weather_drizzle_helper" : "Check the box to disable the 'drizzle' group of conditions.  See http://openweathermap.org/weather-conditions for descriptions.",
+   "open_weather_drizzle_label" : "Disable Open Weather 'drizzle' conditions",
    "pop_threshold_helper" : "Setzt den Schwellenwert für die Vorhersage der Regenwarscheinlichkeit. Regensensor löst aus, wenn der Grenzwert überschritten wird.",
    "pop_threshold_label" : "Regenwahrscheinlichkeit Schwellenwert",
    "rain_sensor_poll_helper" : "Maximales abfrage Intervall für die Regensensoren in Sekunden. Je höher die Regenwarscheinlichkeit desto kürzer das Intervall.",

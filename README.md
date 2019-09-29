@@ -36,9 +36,7 @@ un-trip immediately if left empty
 
 ## popThreshold
 
-Current conditions from WeatherUndergound and ForecastIO contain the current
-probability of probability of precipitation. If this value is set, then pop
-values higher than the threshold will trigger the rain state.
+Current conditions from WeatherUndergound and ForecastIO contain the current probability of precipitation. If this value is set, then pop values higher than the threshold will trigger the rain state.
 
 ## windows
 
@@ -57,7 +55,7 @@ Emits when the rain stops and the optional timeout period has passed
 ## security.rain.alarm
 
 Emits a security event (same structure as the SecurityZone module events)
-when rain starts while an open window was detectet
+when rain starts while an open window was detected
 
 # Virtual Devices
 
